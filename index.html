@@ -28,19 +28,19 @@
       border: 1px solid #f1f5f9; 
       border-radius: 20px; 
       padding: 24px; 
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+      transition: all 0.3s ease; 
     }
-    .skill-card:hover { border-color: #cbd5e1; transform: translateY(-4px); box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05); }
     .progress-bar-bg { background: #f1f5f9; height: 12px; border-radius: 6px; overflow: hidden; }
     .progress-bar-fill { height: 100%; border-radius: 6px; transition: width 1.5s ease-out; }
     
+    /* إطار اللوجو العملاق */
     .logo-frame { 
-      border-radius: 3rem;
+      border-radius: 3.5rem;
       background: rgba(255, 255, 255, 0.03);
       backdrop-filter: blur(10px);
-      border: 1.5px solid rgba(255, 255, 255, 0.08);
-      padding: 1rem;
-      box-shadow: 0 20px 40px -5px rgba(0,0,0,0.2);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      padding: 1.5rem;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
     }
     
     .human-signature {
@@ -51,15 +51,9 @@
       letter-spacing: -2px;
       transform: rotate(-3deg);
       display: inline-block;
-      margin-top: 10px;
     }
 
-    @media print { 
-      .no-print { display: none !important; } 
-      body { padding: 0; background: white; } 
-      .report-card { border: none; box-shadow: none; width: 100%; margin: 0; border-radius: 0; }
-      .header-gradient { -webkit-print-color-adjust: exact; }
-    }
+    @media print { .no-print { display: none !important; } }
   </style>
 </head>
 <body>
@@ -72,28 +66,30 @@
       </select>
     </div>
     <div class="flex gap-2">
-      <button onclick="fetchData()" class="bg-sky-600 hover:bg-sky-500 text-white px-6 py-4 rounded-2xl font-bold transition-all active:scale-95 flex items-center gap-2">Update 🔄</button>
-      <button onclick="downloadImage()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-4 rounded-2xl font-bold transition-all active:scale-95 flex items-center gap-2 shadow-lg shadow-emerald-100">Save Image 🖼️</button>
-      <button onclick="window.print()" class="bg-slate-900 hover:bg-slate-800 text-white px-6 py-4 rounded-2xl font-bold transition-all active:scale-95 flex items-center gap-2 shadow-lg shadow-slate-200">PDF 🖨️</button>
+      <button onclick="fetchData()" class="bg-sky-600 hover:bg-sky-500 text-white px-6 py-4 rounded-2xl font-bold transition-all active:scale-95">Update 🔄</button>
+      <button onclick="downloadImage()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-4 rounded-2xl font-bold transition-all active:scale-95 shadow-lg shadow-emerald-100">Save Image 🖼️</button>
+      <button onclick="window.print()" class="bg-slate-900 hover:bg-slate-800 text-white px-6 py-4 rounded-2xl font-bold transition-all active:scale-95">PDF 🖨️</button>
     </div>
   </div>
 
   <div id="reportArea" class="report-card opacity-0 transition-opacity duration-1000">
     <div id="captureTarget">
       <div class="header-gradient p-12 flex flex-col items-center justify-center">
-        <div class="mb-8 relative">
-          <div class="absolute inset-0 bg-sky-500/25 blur-3xl rounded-full"></div>
-          <div class="logo-frame relative w-60 h-60 flex items-center justify-center">
+        <div class="mb-10 relative">
+          <div class="absolute inset-0 bg-sky-500/20 blur-[100px] rounded-full"></div>
+          
+          <div class="logo-frame relative w-80 h-80 flex items-center justify-center">
             <img src="logo.png" alt="51Talk Official Logo" class="max-w-full max-h-full object-contain">
           </div>
         </div>
+
         <div class="text-center">
           <h2 class="text-xs uppercase font-bold tracking-[0.6em] text-sky-400/90 mb-4">English Progress Report</h2>
           <h1 class="text-6xl md:text-8xl font-black tracking-tight mb-8" id="cardName">Student Name</h1>
           <div class="flex items-center justify-center gap-10 pt-6 border-t border-white/10">
             <div class="text-center">
               <p class="text-[10px] uppercase font-bold opacity-40 tracking-widest mb-1">Report Date</p>
-              <p class="text-sm font-bold text-white" id="dispDate">March 11, 2026</p>
+              <p class="text-sm font-bold text-white" id="dispDate">March 12, 2026</p>
             </div>
             <div class="w-px h-10 bg-white/10"></div>
             <div class="text-center">
@@ -151,20 +147,11 @@
     const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0TrGJYR9ywCx79tzUu8JGiOASatbpL6EBUNsgZYjGBc0wtI_vbhGsayUhqU0YJOdmwkWZHgAIWNZY/pub?output=csv";
     let students = [];
 
-    // وظيفة تحميل الصورة
     function downloadImage() {
       const target = document.getElementById('captureTarget');
       const studentName = document.getElementById('cardName').innerText;
-      
-      // التمرير لأعلى الصفحة لضمان جودة الصورة
       window.scrollTo(0,0);
-      
-      html2canvas(target, {
-        scale: 2, // جودة مضاعفة
-        useCORS: true,
-        backgroundColor: "#ffffff",
-        logging: false
-      }).then(canvas => {
+      html2canvas(target, { scale: 2, useCORS: true, backgroundColor: "#ffffff" }).then(canvas => {
         const link = document.createElement('a');
         link.download = `51Talk_Report_${studentName}.png`;
         link.href = canvas.toDataURL("image/png");
@@ -208,7 +195,7 @@
       const s = students[idx];
       document.getElementById('reportArea').classList.remove('opacity-0');
       document.getElementById('cardName').innerText = s.name;
-      document.getElementById('dispDate').innerText = s.date || "March 11, 2026";
+      document.getElementById('dispDate').innerText = s.date || "March 12, 2026";
 
       let sumNow = 0, sumDiff = 0, count = 0;
       const grid = document.getElementById('skillsGrid');
@@ -219,8 +206,6 @@
         const oldVal = parseInt(skill.old) || 0;
         const diff = nowVal - oldVal;
         sumNow += nowVal; sumDiff += diff; count++;
-        const trendIcon = diff > 0 ? "▲" : (diff < 0 ? "▼" : "•");
-        const trendClass = diff > 0 ? "trend-up" : (diff < 0 ? "trend-down" : "trend-neutral");
         grid.innerHTML += `
           <div class="skill-card">
             <div class="flex justify-between items-start mb-4">
@@ -229,7 +214,7 @@
                 <span class="text-xs font-black text-slate-400 uppercase tracking-widest">${skill.label}</span>
               </div>
               <div class="text-right">
-                <span class="text-[0.75rem] font-bold px-3 py-1 rounded-full ${trendClass}">${trendIcon} ${Math.abs(diff)}%</span>
+                <span class="text-[0.75rem] font-bold px-3 py-1 rounded-full ${diff >= 0 ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}">${diff >= 0 ? '▲' : '▼'} ${Math.abs(diff)}%</span>
               </div>
             </div>
             <div class="flex justify-between items-end mb-3">
