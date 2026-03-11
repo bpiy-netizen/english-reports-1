@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SITalk Premium Progress Report</title>
+  <title>51Talk Official Progress Report</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
   <style>
     * { font-family: 'Inter', sans-serif; }
-    h1, h2 { font-family: 'Outfit', sans-serif; }
-    body { background: #f3f4f6; min-height: 100vh; padding: 20px; }
+    h1, h2, h3 { font-family: 'Outfit', sans-serif; }
+    body { background: #f3f4f6; min-height: 100vh; padding: 20px; color: #1f2937; }
+    
     .header-gradient { 
       background: linear-gradient(135deg, #111827 0%, #1f2937 100%); 
       border-radius: 24px 24px 0 0; 
@@ -18,7 +19,7 @@
     .report-card { 
       background: #ffffff; 
       border-radius: 24px; 
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1); 
+      box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.1); 
       max-width: 1000px; margin: 0 auto; 
     }
     .skill-card { 
@@ -31,17 +32,34 @@
     .skill-card:hover { border-color: #cbd5e1; transform: translateY(-4px); box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05); }
     .progress-bar-bg { background: #f1f5f9; height: 12px; border-radius: 6px; overflow: hidden; }
     .progress-bar-fill { height: 100%; border-radius: 6px; transition: width 1.5s ease-out; }
-    .stat-badge { 
-      font-size: 0.75rem; padding: 4px 12px; border-radius: 99px; 
-      font-weight: 700; display: inline-flex; align-items: center; gap: 4px; 
+    
+    /* فخامة خلفية اللوغو - إطار SITalk */
+    .logo-frame { 
+      border-radius: 3rem;
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(10px);
+      border: 1.5px solid rgba(255, 255, 255, 0.08);
+      padding: 1rem;
+      box-shadow: 0 20px 40px -5px rgba(0,0,0,0.2);
     }
-    .trend-up { color: #10b981; background: #ecfdf5; border: 1px solid #10b981; }
-    .trend-down { color: #ef4444; background: #fef2f2; border: 1px solid #ef4444; }
-    .trend-neutral { color: #6b7280; background: #f3f4f6; border: 1px solid #e5e7eb; }
+    
+    /* ستايل التوقيع البشري */
+    .human-signature {
+      font-family: 'Inter', sans-serif; /* هنا يمكن استبدالها بخط Signature لو توفر */
+      color: #1a202c;
+      font-size: 2.2rem;
+      font-weight: 500;
+      letter-spacing: -2px;
+      transform: rotate(-3deg);
+      display: inline-block;
+      margin-top: 10px;
+    }
+
     @media print { 
       .no-print { display: none !important; } 
       body { padding: 0; background: white; } 
       .report-card { border: none; box-shadow: none; width: 100%; margin: 0; border-radius: 0; }
+      .header-gradient { -webkit-print-color-adjust: exact; }
     }
   </style>
 </head>
@@ -49,9 +67,9 @@
 
   <div class="no-print max-w-5xl mx-auto mb-10 bg-white p-6 rounded-3xl shadow-xl flex flex-wrap gap-4 items-end border border-slate-100">
     <div class="flex-1 min-w-[250px]">
-      <label class="block text-slate-500 text-xs font-bold mb-3 uppercase tracking-[0.2em] text-right">Student Selection</label>
+      <label class="block text-slate-500 text-xs font-bold mb-3 uppercase tracking-[0.2em] text-right">Student Record Access</label>
       <select id="studentSelect" onchange="renderStudent()" class="w-full p-4 rounded-2xl border border-slate-200 text-slate-900 font-bold focus:ring-4 focus:ring-sky-500/20 outline-none transition-all">
-        <option value="">-- Loading Students... --</option>
+        <option value="">-- Jari التحميل... --</option>
       </select>
     </div>
     <div class="flex gap-3">
@@ -64,25 +82,26 @@
     
     <div class="header-gradient p-12 flex flex-col items-center justify-center">
       <div class="mb-8 relative">
-        <div class="absolute inset-0 bg-sky-500/20 blur-3xl rounded-full"></div>
-        <div class="relative w-52 h-52 flex items-center justify-center overflow-hidden bg-white/5 backdrop-blur-md rounded-[2.5rem] p-6 border border-white/10 shadow-2xl">
-          <img src="logo.png" alt="SITalk Logo" class="max-w-full max-h-full object-contain">
+        <div class="absolute inset-0 bg-sky-500/25 blur-3xl rounded-full"></div>
+        
+        <div class="logo-frame relative w-60 h-60 flex items-center justify-center">
+          <img src="logo.png" alt="51Talk Official Logo" class="max-w-full max-h-full object-contain">
         </div>
       </div>
 
       <div class="text-center">
-        <h2 class="text-xs uppercase font-bold tracking-[0.6em] text-sky-400/80 mb-4">English Progress Report</h2>
-        <h1 class="text-5xl md:text-7xl font-bold tracking-tight mb-6" id="cardName">Student Name</h1>
+        <h2 class="text-xs uppercase font-bold tracking-[0.6em] text-sky-400/90 mb-4">English Progress Report</h2>
+        <h1 class="text-6xl md:text-8xl font-black tracking-tight mb-8" id="cardName">Student Name</h1>
         
-        <div class="flex items-center justify-center gap-8 pt-6 border-t border-white/10">
+        <div class="flex items-center justify-center gap-10 pt-6 border-t border-white/10">
           <div class="text-center">
-            <p class="text-[10px] uppercase font-bold opacity-40 tracking-widest mb-1">Issue Date</p>
+            <p class="text-[10px] uppercase font-bold opacity-40 tracking-widest mb-1">Report Date</p>
             <p class="text-sm font-bold text-white" id="dispDate">March 11, 2026</p>
           </div>
           <div class="w-px h-10 bg-white/10"></div>
           <div class="text-center">
             <p class="text-[10px] uppercase font-bold opacity-40 tracking-widest mb-1">Accreditation</p>
-            <p class="text-sm font-bold text-white">Official SITalk Document</p>
+            <p class="text-sm font-bold text-white">Official 51Talk Document</p>
           </div>
         </div>
       </div>
@@ -90,22 +109,22 @@
 
     <div class="p-8 md:p-14 space-y-12">
       
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 items-center bg-slate-50 p-10 rounded-[2rem] border border-slate-100">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 items-center bg-slate-50 p-10 rounded-[2.5rem] border border-slate-100">
         <div class="flex items-center gap-5 col-span-1 md:col-span-2">
           <div class="w-20 h-20 bg-white text-sky-600 rounded-2xl flex items-center justify-center text-4xl shadow-sm border border-slate-100">🎓</div>
           <div>
             <h3 class="font-bold text-slate-900 text-2xl">Performance Summary</h3>
-            <p class="text-slate-500 text-sm">Comprehensive skill analysis for this period.</p>
+            <p class="text-slate-500 text-sm">Comprehensive assessment across all core language skills.</p>
           </div>
         </div>
         <div class="text-center md:border-r border-slate-200 px-4">
-          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Overall Grade</p>
-          <span class="text-5xl font-bold text-sky-600" id="avgNow">0%</span>
+          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Overall Grade Now</p>
+          <span class="text-6xl font-black text-sky-600" id="avgNow">0%</span>
         </div>
         <div class="text-center px-4">
-          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Total Progress</p>
+          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Total Period Progress</p>
           <div class="flex items-center justify-center gap-3">
-            <span class="text-4xl font-bold text-slate-800" id="avgDiff">0%</span>
+            <span class="text-5xl font-bold text-slate-800" id="avgDiff">0%</span>
             <span id="avgTrendIcon" class="text-3xl"></span>
           </div>
         </div>
@@ -115,16 +134,21 @@
       
       <div class="mt-20 pt-12 border-t border-slate-100 flex justify-between items-end">
         <div class="bg-slate-50 px-6 py-4 rounded-2xl border border-slate-100">
-          <p class="text-slate-400 text-[10px] font-bold tracking-widest uppercase mb-2">Academic Status</p>
+          <p class="text-slate-400 text-[10px] font-bold tracking-widest uppercase mb-2">Verified Academic Status</p>
           <div class="flex items-center gap-2">
             <div class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></div>
-            <span class="text-slate-900 font-bold text-sm">Verified Progress</span>
+            <span class="text-slate-900 font-bold text-sm">Valid Progress Record</span>
           </div>
         </div>
         <div class="text-right">
-          <p class="text-slate-400 text-[10px] font-bold tracking-widest uppercase mb-4 text-center">Educational Director</p>
-          <div class="h-16 w-56 ml-auto border-b-2 border-slate-900/10 mb-2"></div>
-          <p class="text-slate-900 font-black text-sm uppercase tracking-tighter">SITalk Management</p>
+          <p class="text-slate-400 text-[10px] font-bold tracking-widest uppercase mb-2 text-center">Approved By</p>
+          
+          <div class="mb-2">
+            <span class="human-signature">D. Consultant</span>
+          </div>
+          
+          <div class="h-0.5 w-56 ml-auto bg-slate-900/10 mb-2"></div>
+          <p class="text-slate-900 font-black text-sm uppercase tracking-tighter">Educational Consultant Team</p>
         </div>
       </div>
     </div>
