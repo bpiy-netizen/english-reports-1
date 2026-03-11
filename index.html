@@ -3,68 +3,126 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>English Progress Dashboard</title>
+  <title>English Progress Dashboard - Professional</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Outfit', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); min-height: 100vh; margin: 0; padding: 20px; }
-    .skill-bar { transition: width 1.5s ease-in-out; height: 100%; border-radius: 9999px; }
+    * { font-family: 'Outfit', sans-serif; }
+    body { background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); min-height: 100vh; padding: 20px; }
+    .skill-bar { transition: width 1.5s cubic-bezier(0.1, 0, 0.3, 1); height: 100%; border-radius: 9999px; }
     @media print { .no-print { display: none !important; } body { background: white !important; padding: 0; } }
-    .card { background: white; border-radius: 24px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); padding: 32px; max-width: 800px; margin: 0 auto; }
+    .report-card { background: white; border-radius: 2rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
   </style>
 </head>
 <body>
 
-  <div class="no-print max-w-2xl mx-auto mb-10 bg-white/20 backdrop-blur-md p-6 rounded-2xl border border-white/30">
-    <h2 class="text-white font-bold mb-4 text-center">⚙️ لوحة تحكم المستشار التعليمي</h2>
-    <div class="flex flex-col gap-4">
-      <input type="text" id="csvURL" placeholder="أدخل رابط Google Sheets (CSV) هنا" class="p-3 rounded-lg border-none shadow-inner w-full text-sm">
-      <div class="flex gap-2">
-        <button onclick="loadData()" class="bg-indigo-600 text-white px-6 py-3 rounded-lg font-bold flex-1 hover:bg-indigo-700 transition">1. تحديث البيانات</button>
-        <select id="studentSelect" onchange="displayStudent()" class="p-3 rounded-lg border-none shadow-inner flex-1 font-bold text-gray-700">
-          <option value="">-- إختر الطالب --</option>
+  <div class="no-print max-w-4xl mx-auto mb-8 bg-white/20 backdrop-blur-md p-6 rounded-3xl border border-white/30 shadow-xl text-white">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-bold mb-2 text-right">إختر الطالب من القائمة:</label>
+        <select id="studentSelect" onchange="renderStudent()" class="w-full p-3 rounded-xl text-gray-800 font-bold shadow-md bg-white">
+          <option value="">-- اضغط "تحديث" أولاً --</option>
         </select>
       </div>
-      <button onclick="window.print()" class="bg-green-500 text-white px-6 py-3 rounded-lg font-bold hover:bg-green-600 transition">2. حفظ التقرير PDF</button>
+      <div class="flex items-end gap-2">
+        <button onclick="fetchData()" class="flex-1 bg-purple-600 hover:bg-purple-700 text-white px-4 py-3 rounded-xl font-bold transition shadow-lg">تحديث البيانات 🔄</button>
+        <button onclick="window.print()" class="flex-1 bg-green-500 hover:bg-green-600 text-white px-4 py-3 rounded-xl font-bold transition shadow-lg">حفظ PDF 🖨️</button>
+      </div>
     </div>
   </div>
 
-  <div id="mainReport" class="opacity-0 transition-opacity duration-700">
+  <main id="reportArea" class="max-w-4xl mx-auto opacity-0 transition-opacity duration-700">
     <header class="text-center mb-8">
-      <div class="inline-block bg-white/20 backdrop-blur-sm rounded-full px-6 py-2 mb-4 text-white font-medium">📚 English Learning Journey</div>
-      <h1 class="text-4xl font-bold text-white mb-2 drop-shadow-md"><span id="titleName">Student</span>'s Progress</h1>
-      <p class="text-white/80" id="dispDate">Report Date: --/--/----</p>
+      <div class="inline-flex items-center gap-3 bg-white/20 backdrop-blur-sm rounded-full px-6 py-2 mb-4 text-white">
+        <span>📚</span> <span class="font-medium">English Learning Journey</span>
+      </div>
+      <h1 class="text-4xl font-bold text-white mb-2"><span id="titleName">Student</span>'s Progress</h1>
+      <p class="text-white/80" id="dispDate">Date: ---</p>
     </header>
 
-    <div class="card mb-8 flex flex-col md:flex-row items-center gap-6">
+    <div class="report-card p-8 mb-8 flex flex-col md:flex-row items-center gap-8">
       <div class="w-24 h-24 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-4xl shadow-lg">👨‍🎓</div>
       <div class="text-center md:text-left">
         <h2 id="cardName" class="text-3xl font-bold text-gray-800">Student Name</h2>
         <p class="text-gray-500 font-medium">English Language Student</p>
-        <div class="mt-2"><span class="bg-green-100 text-green-700 px-4 py-1 rounded-full text-sm font-bold italic">🌟 Making Great Progress!</span></div>
+        <div class="mt-2"><span class="bg-green-100 text-green-700 px-4 py-1.5 rounded-full text-sm font-bold italic animate-pulse">🌟 Making Great Progress!</span></div>
       </div>
     </div>
 
-    <div class="card space-y-8">
-      <h3 class="text-xl font-bold text-gray-800 border-b pb-4">📊 Skills Development Overview</h3>
-      
+    <div class="report-card p-8 space-y-8">
+      <h3 class="text-xl font-bold text-gray-800 border-b pb-4">📊 Skills Development</h3>
       <div class="space-y-6">
         <div>
-          <div class="flex justify-between mb-2 font-bold text-gray-700"><span>📖 Reading</span><span id="p-r" class="text-indigo-600">0%</span></div>
-          <div class="w-full bg-gray-100 h-4 rounded-full"><div id="b-r" class="skill-bar bg-indigo-500" style="width: 0%"></div></div>
+          <div class="flex justify-between mb-2 font-bold text-gray-700"><span>📖 Reading</span><span id="v-r" class="text-indigo-600">0%</span></div>
+          <div class="h-4 bg-gray-100 rounded-full overflow-hidden"><div id="b-r" class="skill-bar bg-indigo-500" style="width: 0%"></div></div>
         </div>
         <div>
-          <div class="flex justify-between mb-2 font-bold text-gray-700"><span>✍️ Writing</span><span id="p-w" class="text-purple-600">0%</span></div>
-          <div class="w-full bg-gray-100 h-4 rounded-full"><div id="b-w" class="skill-bar bg-purple-500" style="width: 0%"></div></div>
+          <div class="flex justify-between mb-2 font-bold text-gray-700"><span>✍️ Writing</span><span id="v-w" class="text-purple-600">0%</span></div>
+          <div class="h-4 bg-gray-100 rounded-full overflow-hidden"><div id="b-w" class="skill-bar bg-purple-500" style="width: 0%"></div></div>
         </div>
         <div>
-          <div class="flex justify-between mb-2 font-bold text-gray-700"><span>🎧 Listening</span><span id="p-l" class="text-pink-600">0%</span></div>
-          <div class="w-full bg-gray-100 h-4 rounded-full"><div id="b-l" class="skill-bar bg-pink-500" style="width: 0%"></div></div>
+          <div class="flex justify-between mb-2 font-bold text-gray-700"><span>🎧 Listening</span><span id="v-l" class="text-pink-600">0%</span></div>
+          <div class="h-4 bg-gray-100 rounded-full overflow-hidden"><div id="b-l" class="skill-bar bg-pink-500" style="width: 0%"></div></div>
         </div>
         <div>
-          <div class="flex justify-between mb-2 font-bold text-gray-700"><span>🗣️ Speaking</span><span id="p-s" class="text-orange-600">0%</span></div>
-          <div class="w-full bg-gray-100 h-4 rounded-full"><div id="b-s" class="skill-bar bg-orange-500" style="width: 0%"></div></div>
+          <div class="flex justify-between mb-2 font-bold text-gray-700"><span>🗣️ Speaking</span><span id="v-s" class="text-orange-600">0%</span></div>
+          <div class="h-4 bg-gray-100 rounded-full overflow-hidden"><div id="b-s" class="skill-bar bg-orange-500" style="width: 0%"></div></div>
         </div>
       </div>
     </div>
-  </div>
+  </main>
+
+  <script>
+    // الرابط الخاص بك مدمج الآن تلقائياً لراحتك
+    const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0TrGJYR9ywCx79tzUu8JGiOASatbpL6EBUNsgZYjGBc0wtI_vbhGsayUhqU0YJOdmwkWZHgAIWNZY/pub?output=csv";
+    let students = [];
+
+    async function fetchData() {
+      try {
+        const response = await fetch(sheetURL);
+        const csvText = await response.text();
+        const rows = csvText.split(/\r?\n/).filter(row => row.trim() !== "");
+        
+        // تنظيف البيانات وتحويلها لكائنات
+        students = rows.slice(1).map(row => {
+          const cols = row.split(',').map(c => c.trim().replace(/"/g, ''));
+          return { name: cols[0], r: cols[1], w: cols[2], l: cols[3], s: cols[4], date: cols[5] };
+        }).filter(s => s.name);
+
+        const select = document.getElementById('studentSelect');
+        select.innerHTML = '<option value="">-- اختر اسم الطالب --</option>';
+        students.forEach((s, index) => {
+          let opt = document.createElement('option');
+          opt.value = index;
+          opt.innerText = s.name;
+          select.appendChild(opt);
+        });
+        alert("✅ تم تحميل بيانات " + students.length + " طلاب بنجاح!");
+      } catch (e) {
+        alert("❌ فشل في تحميل البيانات. تأكد من اتصال الإنترنت.");
+      }
+    }
+
+    function renderStudent() {
+      const idx = document.getElementById('studentSelect').value;
+      if (idx === "") return;
+      const s = students[idx];
+      document.getElementById('reportArea').style.opacity = 1;
+      document.getElementById('titleName').innerText = s.name;
+      document.getElementById('cardName').innerText = s.name;
+      document.getElementById('dispDate').innerText = "Report Date: " + (s.date || "2025");
+
+      const update = (vId, bId, val) => {
+        const num = val || 0;
+        document.getElementById(vId).innerText = num + "%";
+        document.getElementById(bId).style.width = num + "%";
+      }
+      update('v-r', 'b-r', s.r); update('v-w', 'b-w', s.w);
+      update('v-l', 'b-l', s.l); update('v-s', 'b-s', s.s);
+    }
+    
+    // تحميل البيانات تلقائياً عند فتح الموقع
+    window.onload = fetchData;
+  </script>
+</body>
+</html>
