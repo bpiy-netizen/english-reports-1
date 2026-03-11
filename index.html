@@ -3,47 +3,132 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Progressive Report System</title>
+  <title>Premium Education Progress Report</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700&display=swap" rel="stylesheet">
   <style>
-    * { font-family: 'Outfit', sans-serif; }
-    body { background: #f1f5f9; min-height: 100vh; padding: 40px 20px; }
-    .report-container { max-width: 950px; margin: 0 auto; background: white; border-radius: 30px; overflow: hidden; box-shadow: 0 40px 100px -20px rgba(0,0,0,0.1); }
-    .header-section { background: #1e293b; padding: 50px; text-align: center; color: white; }
-    .skill-card { background: #f8fafc; border-radius: 20px; padding: 20px; border: 1px solid #e2e8f0; }
-    .progress-bar-bg { background: #e2e8f0; height: 10px; border-radius: 10px; overflow: hidden; margin: 15px 0; }
-    .progress-bar-fill { height: 100%; transition: width 1.5s ease-out; }
-    .stat-badge { font-size: 0.75rem; padding: 2px 8px; border-radius: 5px; font-weight: bold; }
-    .trend-up { color: #059669; background: #ecfdf5; }
-    .trend-down { color: #dc2626; background: #fef2f2; }
-    @media print { .no-print { display: none !important; } .report-container { box-shadow: none; border: 1px solid #eee; } }
+    * { font-family: 'Inter', sans-serif; }
+    h1, h2 { font-family: 'Outfit', sans-serif; }
+    body { background: #f9fafb; min-height: 100vh; padding: 20px; }
+    
+    /* فخامة خلفية الرأس */
+    .header-gradient { 
+      background: linear-gradient(135deg, #1f2937 0%, #111827 100%); 
+      border-radius: 20px 20px 0 0; 
+      padding: 40px; color: white; 
+    }
+    
+    /* تصميم البطاقات Glassmorphism */
+    .report-card { 
+      background: #ffffff; 
+      border-radius: 0 0 20px 20px; 
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05); 
+      overflow: hidden; 
+      max-width: 1000px; margin: 0 auto; 
+    }
+    .skill-card { 
+      background: white; 
+      border: 1px solid #f1f5f9; 
+      border-radius: 16px; 
+      padding: 20px; 
+      transition: all 0.2s ease; 
+    }
+    .skill-card:hover { border-color: #e2e8f0; transform: translateY(-3px); }
+    
+    /* تصميم شريط التقدم */
+    .progress-bar-bg { background: #f1f5f9; height: 10px; border-radius: 5px; overflow: hidden; }
+    .progress-bar-fill { 
+      height: 100%; 
+      border-radius: 5px; 
+      transition: width 1.5s ease-out; 
+    }
+    
+    /* الأختام الرسمية */
+    .stat-badge { 
+      font-size: 0.7rem; padding: 3px 10px; border-radius: 20px; 
+      font-weight: 700; display: inline-flex; align-items: center; gap: 4px; 
+    }
+    .trend-up { color: #10b981; background: #ecfdf5; border: 1px solid #10b981; }
+    .trend-down { color: #ef4444; background: #fef2f2; border: 1px solid #ef4444; }
+    .trend-neutral { color: #6b7280; background: #f3f4f6; border: 1px solid #e5e7eb; }
+
+    @media print { 
+      .no-print { display: none !important; } 
+      body { padding: 0; background: white; } 
+      .report-card { border: none; box-shadow: none; width: 100%; margin: 0; border-radius: 0; } 
+      .header-gradient { -webkit-print-color-adjust: exact; }
+    }
   </style>
 </head>
 <body>
 
-  <div class="no-print max-w-4xl mx-auto mb-10 bg-white p-4 rounded-2xl shadow-lg flex flex-wrap gap-4 items-end">
-    <div class="flex-1 min-w-[200px]">
-      <label class="block text-slate-500 text-[10px] font-bold mb-2 uppercase tracking-widest text-right">اختر الطالب</label>
-      <select id="studentSelect" onchange="renderStudent()" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-indigo-500">
-        <option value="">-- جاري التحميل --</option>
+  <div class="no-print max-w-5xl mx-auto mb-10 bg-white p-5 rounded-2xl shadow-xl flex flex-wrap gap-4 items-end border border-slate-100">
+    <div class="flex-1 min-w-[250px]">
+      <label class="block text-slate-500 text-xs font-semibold mb-2 uppercase tracking-widest text-right">Student Record</label>
+      <select id="studentSelect" onchange="renderStudent()" class="w-full p-3 rounded-xl border border-slate-200 text-slate-900 font-semibold focus:ring-2 focus:ring-sky-500">
+        <option value="">-- Jari التحميل --</option>
       </select>
     </div>
-    <button onclick="fetchData()" class="bg-indigo-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-indigo-700 transition">تحديث البيانات 🔄</button>
-    <button onclick="window.print()" class="bg-slate-800 text-white px-8 py-3 rounded-xl font-bold hover:bg-slate-900 transition">حفظ PDF 🖨️</button>
+    <div class="flex gap-2">
+      <button onclick="fetchData()" class="bg-sky-600 hover:bg-sky-500 text-white px-8 py-3 rounded-xl font-semibold transition active:scale-95 flex items-center gap-2">تحديث 🔄</button>
+      <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-700 text-white px-8 py-3 rounded-xl font-semibold transition active:scale-95 flex items-center gap-2">حفظ PDF 🖨️</button>
+    </div>
   </div>
 
-  <div id="reportArea" class="report-container opacity-0 transition-opacity duration-1000">
-    <div class="header-section">
-      <div class="text-sm opacity-50 mb-4 tracking-[0.3em] uppercase" id="dispDate">REPORT DATE</div>
-      <h1 class="text-5xl font-bold mb-2 tracking-tight" id="cardName">Student Name</h1>
-      <p class="text-indigo-400 font-medium tracking-widest uppercase text-[10px]">Comparative Performance Tracking</p>
+  <div id="reportArea" class="report-card opacity-0 transition-opacity duration-1000">
+    
+    <div class="header-gradient grid grid-cols-2 gap-8 items-center">
+      <div class="flex items-center gap-4">
+        <div class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center border border-white/20 text-3xl">🏛️</div>
+        <div>
+          <h2 class="text-xs uppercase font-bold tracking-[0.4em] opacity-60">Report Date</h2>
+          <p class="text-xl font-medium" id="dispDate">MARCH 11, 2026</p>
+        </div>
+      </div>
+      <div class="text-right">
+        <h2 class="text-xs uppercase font-bold tracking-[0.4em] opacity-60">Prepared For</h2>
+        <h1 class="text-5xl font-bold tracking-tight mb-1" id="cardName">Student Name</h1>
+        <p class="text-sm font-medium text-sky-400">Student Progress Report V1.0</p>
+      </div>
     </div>
 
-    <div class="p-10">
+    <div class="p-8 md:p-12 space-y-12 bg-gray-50/50">
+      
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 items-center bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
+        <div class="flex items-center gap-4 col-span-1 md:col-span-2">
+          <div class="w-16 h-16 bg-sky-50 text-sky-600 rounded-2xl flex items-center justify-center text-3xl font-bold">A+</div>
+          <div>
+            <h3 class="font-bold text-slate-900 text-xl">General Evaluation</h3>
+            <p class="text-slate-500 text-sm">Summary of overall performance in all skills.</p>
+          </div>
+        </div>
+        <div class="col-span-1 text-center border-r border-gray-100 h-full flex flex-col justify-center px-4">
+          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total Now</p>
+          <span class="text-4xl font-bold text-sky-600" id="avgNow">0%</span>
+        </div>
+        <div class="col-span-1 text-center flex flex-col justify-center px-4">
+          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total Change</p>
+          <div class="flex items-center justify-center gap-2">
+            <span class="text-3xl font-bold text-slate-800" id="avgDiff">0%</span>
+            <span id="avgTrendIcon" class="text-2xl"></span>
+          </div>
+        </div>
+      </div>
+
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="skillsGrid"></div>
-      <div class="mt-12 pt-8 border-t border-slate-100 text-center italic text-slate-400 text-sm">
-        Educational Consultant Team - Official Progress Document
+      
+      <div class="mt-16 pt-10 border-t border-slate-100 grid grid-cols-3 gap-8 items-end">
+        <div>
+          <p class="text-slate-400 text-[10px] font-bold tracking-widest uppercase mb-1">Status</p>
+          <div class="flex items-center gap-2">
+            <div class="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></div>
+            <span class="text-slate-700 font-bold text-sm">Active Progress</span>
+          </div>
+        </div>
+        <div class="col-span-2 text-right">
+          <p class="text-slate-400 text-[10px] font-bold tracking-widest uppercase mb-1">Educational Consultant Team</p>
+          <div class="h-16 w-48 ml-auto border-b border-gray-200"></div> <p class="text-slate-800 font-bold text-sm italic mt-2">Authorized Signature</p>
+        </div>
       </div>
     </div>
   </div>
@@ -54,7 +139,7 @@
 
     async function fetchData() {
       try {
-        const response = await fetch(sheetURL + '&cb=' + Math.random());
+        const response = await fetch(sheetURL + '&cache=' + new Date().getTime());
         const text = await response.text();
         const rows = text.split(/\r?\n/).filter(r => r.trim() !== "");
         students = rows.slice(1).map(row => {
@@ -62,24 +147,24 @@
           return {
             name: c[0],
             skills: [
-              { label: "Reading", now: c[1], old: c[2], color: "#6366f1", icon: "📖" },
-              { label: "Vocabulary", now: c[3], old: c[4], color: "#ec4899", icon: "📝" },
-              { label: "Listening", now: c[5], old: c[6], color: "#3b82f6", icon: "🎧" },
-              { label: "Speaking", now: c[7], old: c[8], color: "#f59e0b", icon: "🗣️" },
-              { label: "Grammar", now: c[9], old: c[10], color: "#10b981", icon: "📏" }
+              { label: "Reading", now: c[1], old: c[2], color: "linear-gradient(90deg, #6366f1, #818cf8)", icon: "📖" },
+              { label: "Vocabulary", now: c[3], old: c[4], color: "linear-gradient(90deg, #ec4899, #f472b6)", icon: "📝" },
+              { label: "Listening", now: c[5], old: c[6], color: "linear-gradient(90deg, #3b82f6, #60a5fa)", icon: "🎧" },
+              { label: "Speaking", now: c[7], old: c[8], color: "linear-gradient(90deg, #f59e0b, #fbbf24)", icon: "🗣️" },
+              { label: "Grammar", now: c[9], old: c[10], color: "linear-gradient(90deg, #10b981, #34d399)", icon: "📏" }
             ],
             date: c[11]
           };
         }).filter(s => s.name);
 
         const sel = document.getElementById('studentSelect');
-        sel.innerHTML = '<option value="">-- اختر الطالب --</option>';
+        sel.innerHTML = '<option value="">-- Choose student record --</option>';
         students.forEach((s, i) => {
           let opt = document.createElement('option');
           opt.value = i; opt.innerText = s.name;
           sel.appendChild(opt);
         });
-      } catch (e) { console.error(e); }
+      } catch (e) { alert("Error connecting to data."); }
     }
 
     function renderStudent() {
@@ -88,8 +173,9 @@
       const s = students[idx];
       document.getElementById('reportArea').classList.remove('opacity-0');
       document.getElementById('cardName').innerText = s.name;
-      document.getElementById('dispDate').innerText = s.date || "2026";
+      document.getElementById('dispDate').innerText = s.date || "March 11, 2026";
 
+      let sumNow = 0, sumDiff = 0, count = 0;
       const grid = document.getElementById('skillsGrid');
       grid.innerHTML = "";
 
@@ -97,32 +183,40 @@
         const nowVal = parseInt(skill.now) || 0;
         const oldVal = parseInt(skill.old) || 0;
         const diff = nowVal - oldVal;
-        const trendIcon = diff >= 0 ? "▲" : "▼";
-        const trendClass = diff >= 0 ? "trend-up" : "trend-down";
+        
+        sumNow += nowVal; sumDiff += diff; count++;
+        
+        const trendIcon = diff > 0 ? "▲" : (diff < 0 ? "▼" : "•");
+        const trendClass = diff > 0 ? "trend-up" : (diff < 0 ? "trend-down" : "trend-neutral");
 
         grid.innerHTML += `
-          <div class="skill-card">
-            <div class="flex justify-between items-start mb-2">
-              <div>
+          <div class="skill-card flex gap-5 items-center">
+            <div class="text-4xl w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center border border-gray-100">${skill.icon}</div>
+            <div class="flex-1">
+              <div class="flex justify-between items-center mb-1">
                 <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">${skill.label}</span>
-                <div class="text-2xl mt-1">${skill.icon}</div>
-              </div>
-              <div class="text-right">
-                <div class="text-2xl font-bold text-slate-800">${nowVal}%</div>
                 <span class="stat-badge ${trendClass}">${trendIcon} ${Math.abs(diff)}% diff</span>
               </div>
-            </div>
-            <div class="progress-bar-bg">
-              <div class="progress-bar-fill" style="width: 0%; background: ${skill.color}" id="bar-${skill.label}"></div>
-            </div>
-            <div class="flex justify-between text-[10px] font-bold text-slate-400">
-              <span>Old: ${oldVal}%</span>
-              <span>New: ${nowVal}%</span>
+              <div class="flex justify-between items-baseline mb-2">
+                <div class="text-3xl font-bold text-slate-900">${nowVal}<span class="text-sm opacity-50">%</span></div>
+                <div class="text-right text-slate-400 text-xs font-medium">Old: ${oldVal}% &nbsp; / &nbsp; New: ${nowVal}%</div>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill" style="width: 0%; background: ${skill.color}" id="bar-${skill.label}"></div>
+              </div>
             </div>
           </div>
         `;
-        setTimeout(() => { document.getElementById('bar-'+skill.label).style.width = nowVal + "%"; }, 100);
+        setTimeout(() => { document.getElementById('bar-'+skill.label).style.width = nowVal + "%"; }, 150);
       });
+
+      // حساب المعدلات العامة
+      const avgNow = Math.round(sumNow / count);
+      const avgDiff = Math.round(sumDiff / count);
+      document.getElementById('avgNow').innerText = avgNow + "%";
+      document.getElementById('avgDiff').innerText = Math.abs(avgDiff) + "%";
+      document.getElementById('avgTrendIcon').innerText = avgDiff >= 0 ? "📈" : "📉";
+      document.getElementById('avgTrendIcon').className = avgDiff >= 0 ? "text-emerald-500 text-2xl" : "text-rose-500 text-2xl";
     }
     window.onload = fetchData;
   </script>
