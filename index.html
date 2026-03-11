@@ -3,125 +3,125 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>English Progress Dashboard - Professional</title>
+  <title>Student Progress Report</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet">
   <style>
     * { font-family: 'Outfit', sans-serif; }
     body { background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); min-height: 100vh; padding: 20px; }
-    .skill-bar { transition: width 1.5s cubic-bezier(0.1, 0, 0.3, 1); height: 100%; border-radius: 9999px; }
+    .skill-bar { transition: width 1.5s ease-in-out; height: 100%; border-radius: 9999px; }
     @media print { .no-print { display: none !important; } body { background: white !important; padding: 0; } }
-    .report-card { background: white; border-radius: 2rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
+    .report-card { background: white; border-radius: 2rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.2); }
   </style>
 </head>
 <body>
 
-  <div class="no-print max-w-4xl mx-auto mb-8 bg-white/20 backdrop-blur-md p-6 rounded-3xl border border-white/30 shadow-xl text-white">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div>
-        <label class="block text-sm font-bold mb-2 text-right">إختر الطالب من القائمة:</label>
-        <select id="studentSelect" onchange="renderStudent()" class="w-full p-3 rounded-xl text-gray-800 font-bold shadow-md bg-white">
-          <option value="">-- اضغط "تحديث" أولاً --</option>
+  <div class="no-print max-w-4xl mx-auto mb-8 bg-white/20 backdrop-blur-md p-6 rounded-3xl border border-white/30 text-white shadow-xl text-center">
+    <div class="flex flex-col md:flex-row gap-4 justify-center items-center">
+      <div class="flex-1">
+        <label class="block text-sm font-bold mb-1">اختر اسم الطالب:</label>
+        <select id="studentSelect" onchange="renderStudent()" class="p-3 rounded-xl text-gray-800 font-bold w-full">
+          <option value="">-- جاري تحميل البيانات --</option>
         </select>
       </div>
-      <div class="flex items-end gap-2">
-        <button onclick="fetchData()" class="flex-1 bg-purple-600 hover:bg-purple-700 text-white px-4 py-3 rounded-xl font-bold transition shadow-lg">تحديث البيانات 🔄</button>
-        <button onclick="window.print()" class="flex-1 bg-green-500 hover:bg-green-600 text-white px-4 py-3 rounded-xl font-bold transition shadow-lg">حفظ PDF 🖨️</button>
-      </div>
+      <button onclick="fetchData()" class="bg-purple-600 px-8 py-3 rounded-xl font-bold hover:bg-purple-700 transition self-end">تحديث 🔄</button>
+      <button onclick="window.print()" class="bg-green-500 px-8 py-3 rounded-xl font-bold hover:bg-green-600 transition self-end">حفظ PDF 🖨️</button>
     </div>
   </div>
 
   <main id="reportArea" class="max-w-4xl mx-auto opacity-0 transition-opacity duration-700">
-    <header class="text-center mb-8">
-      <div class="inline-flex items-center gap-3 bg-white/20 backdrop-blur-sm rounded-full px-6 py-2 mb-4 text-white">
-        <span>📚</span> <span class="font-medium">English Learning Journey</span>
-      </div>
-      <h1 class="text-4xl font-bold text-white mb-2"><span id="titleName">Student</span>'s Progress</h1>
-      <p class="text-white/80" id="dispDate">Date: ---</p>
+    <header class="text-center mb-8 text-white">
+      <h1 class="text-4xl font-bold mb-2"><span id="titleName">Student</span>'s Progress</h1>
+      <p id="dispDate" class="opacity-80 font-light italic">Report Date: --</p>
     </header>
 
-    <div class="report-card p-8 mb-8 flex flex-col md:flex-row items-center gap-8">
-      <div class="w-24 h-24 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-4xl shadow-lg">👨‍🎓</div>
-      <div class="text-center md:text-left">
-        <h2 id="cardName" class="text-3xl font-bold text-gray-800">Student Name</h2>
-        <p class="text-gray-500 font-medium">English Language Student</p>
-        <div class="mt-2"><span class="bg-green-100 text-green-700 px-4 py-1.5 rounded-full text-sm font-bold italic animate-pulse">🌟 Making Great Progress!</span></div>
+    <div class="report-card p-8 mb-8 flex items-center gap-6">
+      <div class="w-20 h-20 rounded-full bg-indigo-500 flex items-center justify-center text-4xl shadow-lg text-white font-bold shadow-indigo-200">👨‍🎓</div>
+      <div>
+        <h2 id="cardName" class="text-3xl font-bold text-gray-800 tracking-tight">Name</h2>
+        <div class="mt-1"><span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold italic shadow-sm">🌟 Making Great Progress!</span></div>
       </div>
     </div>
 
-    <div class="report-card p-8 space-y-8">
-      <h3 class="text-xl font-bold text-gray-800 border-b pb-4">📊 Skills Development</h3>
-      <div class="space-y-6">
+    <div class="report-card p-8 md:p-10 space-y-8">
+      <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2 border-b pb-4">📊 Skills Analysis</h3>
+      <div class="space-y-7">
         <div>
-          <div class="flex justify-between mb-2 font-bold text-gray-700"><span>📖 Reading</span><span id="v-r" class="text-indigo-600">0%</span></div>
-          <div class="h-4 bg-gray-100 rounded-full overflow-hidden"><div id="b-r" class="skill-bar bg-indigo-500" style="width: 0%"></div></div>
+          <div class="flex justify-between mb-2 font-bold text-gray-600 uppercase text-xs tracking-widest"><span>📖 Reading</span><span id="v-r" class="text-indigo-600 text-lg">0%</span></div>
+          <div class="h-4 bg-gray-100 rounded-full overflow-hidden shadow-inner"><div id="b-r" class="skill-bar bg-gradient-to-r from-indigo-400 to-indigo-600" style="width: 0%"></div></div>
         </div>
         <div>
-          <div class="flex justify-between mb-2 font-bold text-gray-700"><span>✍️ Writing</span><span id="v-w" class="text-purple-600">0%</span></div>
-          <div class="h-4 bg-gray-100 rounded-full overflow-hidden"><div id="b-w" class="skill-bar bg-purple-500" style="width: 0%"></div></div>
+          <div class="flex justify-between mb-2 font-bold text-gray-600 uppercase text-xs tracking-widest"><span>✍️ Writing</span><span id="v-w" class="text-purple-600 text-lg">0%</span></div>
+          <div class="h-4 bg-gray-100 rounded-full overflow-hidden shadow-inner"><div id="b-w" class="skill-bar bg-gradient-to-r from-purple-400 to-purple-600" style="width: 0%"></div></div>
         </div>
         <div>
-          <div class="flex justify-between mb-2 font-bold text-gray-700"><span>🎧 Listening</span><span id="v-l" class="text-pink-600">0%</span></div>
-          <div class="h-4 bg-gray-100 rounded-full overflow-hidden"><div id="b-l" class="skill-bar bg-pink-500" style="width: 0%"></div></div>
+          <div class="flex justify-between mb-2 font-bold text-gray-600 uppercase text-xs tracking-widest"><span>🎧 Listening</span><span id="v-l" class="text-pink-600 text-lg">0%</span></div>
+          <div class="h-4 bg-gray-100 rounded-full overflow-hidden shadow-inner"><div id="b-l" class="skill-bar bg-gradient-to-r from-pink-400 to-pink-600" style="width: 0%"></div></div>
         </div>
         <div>
-          <div class="flex justify-between mb-2 font-bold text-gray-700"><span>🗣️ Speaking</span><span id="v-s" class="text-orange-600">0%</span></div>
-          <div class="h-4 bg-gray-100 rounded-full overflow-hidden"><div id="b-s" class="skill-bar bg-orange-500" style="width: 0%"></div></div>
+          <div class="flex justify-between mb-2 font-bold text-gray-600 uppercase text-xs tracking-widest"><span>🗣️ Speaking</span><span id="v-s" class="text-orange-600 text-lg">0%</span></div>
+          <div class="h-4 bg-gray-100 rounded-full overflow-hidden shadow-inner"><div id="b-s" class="skill-bar bg-gradient-to-r from-orange-400 to-orange-600" style="width: 0%"></div></div>
         </div>
       </div>
     </div>
   </main>
 
   <script>
-    // الرابط الخاص بك مدمج الآن تلقائياً لراحتك
     const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0TrGJYR9ywCx79tzUu8JGiOASatbpL6EBUNsgZYjGBc0wtI_vbhGsayUhqU0YJOdmwkWZHgAIWNZY/pub?output=csv";
     let students = [];
 
     async function fetchData() {
       try {
-        const response = await fetch(sheetURL);
-        const csvText = await response.text();
-        const rows = csvText.split(/\r?\n/).filter(row => row.trim() !== "");
+        const response = await fetch(sheetURL + '&cache=' + Math.random());
+        const text = await response.text();
+        const rows = text.split(/\r?\n/).filter(r => r.trim() !== "");
         
-        // تنظيف البيانات وتحويلها لكائنات
+        // تحويل الصفوف إلى بيانات منظمة وتجاهل أي رموز في العناوين
         students = rows.slice(1).map(row => {
-          const cols = row.split(',').map(c => c.trim().replace(/"/g, ''));
-          return { name: cols[0], r: cols[1], w: cols[2], l: cols[3], s: cols[4], date: cols[5] };
+          const cols = row.split(',').map(item => item.trim().replace(/^"|"$/g, ''));
+          return {
+            name: cols[0],
+            r: cols[1], w: cols[2], l: cols[3], s: cols[4],
+            date: cols[5]
+          };
         }).filter(s => s.name);
 
-        const select = document.getElementById('studentSelect');
-        select.innerHTML = '<option value="">-- اختر اسم الطالب --</option>';
-        students.forEach((s, index) => {
+        const sel = document.getElementById('studentSelect');
+        sel.innerHTML = '<option value="">-- اختر الطالب --</option>';
+        
+        students.forEach((s, i) => {
           let opt = document.createElement('option');
-          opt.value = index;
+          opt.value = i;
           opt.innerText = s.name;
-          select.appendChild(opt);
+          sel.appendChild(opt);
         });
-        alert("✅ تم تحميل بيانات " + students.length + " طلاب بنجاح!");
+
+        console.log("Data Loaded:", students);
       } catch (e) {
-        alert("❌ فشل في تحميل البيانات. تأكد من اتصال الإنترنت.");
+        console.error("Fetch Error:", e);
       }
     }
 
     function renderStudent() {
       const idx = document.getElementById('studentSelect').value;
       if (idx === "") return;
+      
       const s = students[idx];
       document.getElementById('reportArea').style.opacity = 1;
       document.getElementById('titleName').innerText = s.name;
       document.getElementById('cardName').innerText = s.name;
-      document.getElementById('dispDate').innerText = "Report Date: " + (s.date || "2025");
+      document.getElementById('dispDate').innerText = "Report Date: " + (s.date || "March 2026");
 
-      const update = (vId, bId, val) => {
-        const num = val || 0;
-        document.getElementById(vId).innerText = num + "%";
-        document.getElementById(bId).style.width = num + "%";
+      const up = (vId, bId, val) => {
+        const n = val ? val.replace(/[^0-9]/g, '') : 0;
+        document.getElementById(vId).innerText = n + "%";
+        document.getElementById(bId).style.width = n + "%";
       }
-      update('v-r', 'b-r', s.r); update('v-w', 'b-w', s.w);
-      update('v-l', 'b-l', s.l); update('v-s', 'b-s', s.s);
+      
+      up('v-r','b-r', s.r); up('v-w','b-w', s.w);
+      up('v-l','b-l', s.l); up('v-s','b-s', s.s);
     }
-    
-    // تحميل البيانات تلقائياً عند فتح الموقع
+
     window.onload = fetchData;
   </script>
 </body>
