@@ -36,7 +36,7 @@
     </header>
 
     <div class="report-card p-8 mb-8 flex items-center gap-6">
-      <div class="w-20 h-20 rounded-full bg-indigo-500 flex items-center justify-center text-4xl shadow-lg text-white font-bold shadow-indigo-200">👨‍🎓</div>
+      <div class="w-20 h-20 rounded-full bg-indigo-500 flex items-center justify-center text-4xl shadow-lg text-white font-bold">👨‍🎓</div>
       <div>
         <h2 id="cardName" class="text-3xl font-bold text-gray-800 tracking-tight">Name</h2>
         <div class="mt-1"><span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold italic shadow-sm">🌟 Making Great Progress!</span></div>
@@ -45,14 +45,14 @@
 
     <div class="report-card p-8 md:p-10 space-y-8">
       <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2 border-b pb-4">📊 Skills Analysis</h3>
-      <div class="space-y-7">
+      <div class="space-y-6">
         <div>
           <div class="flex justify-between mb-2 font-bold text-gray-600 uppercase text-xs tracking-widest"><span>📖 Reading</span><span id="v-r" class="text-indigo-600 text-lg">0%</span></div>
           <div class="h-4 bg-gray-100 rounded-full overflow-hidden shadow-inner"><div id="b-r" class="skill-bar bg-gradient-to-r from-indigo-400 to-indigo-600" style="width: 0%"></div></div>
         </div>
         <div>
-          <div class="flex justify-between mb-2 font-bold text-gray-600 uppercase text-xs tracking-widest"><span>✍️ Writing</span><span id="v-w" class="text-purple-600 text-lg">0%</span></div>
-          <div class="h-4 bg-gray-100 rounded-full overflow-hidden shadow-inner"><div id="b-w" class="skill-bar bg-gradient-to-r from-purple-400 to-purple-600" style="width: 0%"></div></div>
+          <div class="flex justify-between mb-2 font-bold text-gray-600 uppercase text-xs tracking-widest"><span>📝 Vocabulary</span><span id="v-v" class="text-purple-600 text-lg">0%</span></div>
+          <div class="h-4 bg-gray-100 rounded-full overflow-hidden shadow-inner"><div id="b-v" class="skill-bar bg-gradient-to-r from-purple-400 to-purple-600" style="width: 0%"></div></div>
         </div>
         <div>
           <div class="flex justify-between mb-2 font-bold text-gray-600 uppercase text-xs tracking-widest"><span>🎧 Listening</span><span id="v-l" class="text-pink-600 text-lg">0%</span></div>
@@ -61,6 +61,10 @@
         <div>
           <div class="flex justify-between mb-2 font-bold text-gray-600 uppercase text-xs tracking-widest"><span>🗣️ Speaking</span><span id="v-s" class="text-orange-600 text-lg">0%</span></div>
           <div class="h-4 bg-gray-100 rounded-full overflow-hidden shadow-inner"><div id="b-s" class="skill-bar bg-gradient-to-r from-orange-400 to-orange-600" style="width: 0%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between mb-2 font-bold text-gray-600 uppercase text-xs tracking-widest"><span>📏 Grammar</span><span id="v-g" class="text-emerald-600 text-lg">0%</span></div>
+          <div class="h-4 bg-gray-100 rounded-full overflow-hidden shadow-inner"><div id="b-g" class="skill-bar bg-gradient-to-r from-emerald-400 to-emerald-600" style="width: 0%"></div></div>
         </div>
       </div>
     </div>
@@ -76,41 +80,33 @@
         const text = await response.text();
         const rows = text.split(/\r?\n/).filter(r => r.trim() !== "");
         
-        // تحويل الصفوف إلى بيانات منظمة وتجاهل أي رموز في العناوين
         students = rows.slice(1).map(row => {
           const cols = row.split(',').map(item => item.trim().replace(/^"|"$/g, ''));
           return {
             name: cols[0],
-            r: cols[1], w: cols[2], l: cols[3], s: cols[4],
-            date: cols[5]
+            r: cols[1], v: cols[2], l: cols[3], s: cols[4], g: cols[5],
+            date: cols[6]
           };
         }).filter(s => s.name);
 
         const sel = document.getElementById('studentSelect');
         sel.innerHTML = '<option value="">-- اختر الطالب --</option>';
-        
         students.forEach((s, i) => {
           let opt = document.createElement('option');
-          opt.value = i;
-          opt.innerText = s.name;
+          opt.value = i; opt.innerText = s.name;
           sel.appendChild(opt);
         });
-
-        console.log("Data Loaded:", students);
-      } catch (e) {
-        console.error("Fetch Error:", e);
-      }
+      } catch (e) { console.error(e); }
     }
 
     function renderStudent() {
       const idx = document.getElementById('studentSelect').value;
       if (idx === "") return;
-      
       const s = students[idx];
       document.getElementById('reportArea').style.opacity = 1;
       document.getElementById('titleName').innerText = s.name;
       document.getElementById('cardName').innerText = s.name;
-      document.getElementById('dispDate').innerText = "Report Date: " + (s.date || "March 2026");
+      document.getElementById('dispDate').innerText = "Report Date: " + (s.date || "2026");
 
       const up = (vId, bId, val) => {
         const n = val ? val.replace(/[^0-9]/g, '') : 0;
@@ -118,8 +114,9 @@
         document.getElementById(bId).style.width = n + "%";
       }
       
-      up('v-r','b-r', s.r); up('v-w','b-w', s.w);
+      up('v-r','b-r', s.r); up('v-v','b-v', s.v);
       up('v-l','b-l', s.l); up('v-s','b-s', s.s);
+      up('v-g','b-g', s.g);
     }
 
     window.onload = fetchData;
