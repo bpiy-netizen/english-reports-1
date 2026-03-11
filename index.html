@@ -3,72 +3,50 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Progress Report</title>
+  <title>Progressive Report System</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
     * { font-family: 'Outfit', sans-serif; }
-    body { background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); min-height: 100vh; padding: 20px; }
-    .skill-bar { transition: width 1.5s ease-in-out; height: 100%; border-radius: 9999px; }
-    @media print { .no-print { display: none !important; } body { background: white !important; padding: 0; } }
-    .report-card { background: white; border-radius: 2rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.2); }
+    body { background: #f1f5f9; min-height: 100vh; padding: 40px 20px; }
+    .report-container { max-width: 950px; margin: 0 auto; background: white; border-radius: 30px; overflow: hidden; box-shadow: 0 40px 100px -20px rgba(0,0,0,0.1); }
+    .header-section { background: #1e293b; padding: 50px; text-align: center; color: white; }
+    .skill-card { background: #f8fafc; border-radius: 20px; padding: 20px; border: 1px solid #e2e8f0; }
+    .progress-bar-bg { background: #e2e8f0; height: 10px; border-radius: 10px; overflow: hidden; margin: 15px 0; }
+    .progress-bar-fill { height: 100%; transition: width 1.5s ease-out; }
+    .stat-badge { font-size: 0.75rem; padding: 2px 8px; border-radius: 5px; font-weight: bold; }
+    .trend-up { color: #059669; background: #ecfdf5; }
+    .trend-down { color: #dc2626; background: #fef2f2; }
+    @media print { .no-print { display: none !important; } .report-container { box-shadow: none; border: 1px solid #eee; } }
   </style>
 </head>
 <body>
 
-  <div class="no-print max-w-4xl mx-auto mb-8 bg-white/20 backdrop-blur-md p-6 rounded-3xl border border-white/30 text-white shadow-xl text-center">
-    <div class="flex flex-col md:flex-row gap-4 justify-center items-center">
-      <div class="flex-1">
-        <label class="block text-sm font-bold mb-1">اختر اسم الطالب:</label>
-        <select id="studentSelect" onchange="renderStudent()" class="p-3 rounded-xl text-gray-800 font-bold w-full">
-          <option value="">-- جاري تحميل البيانات --</option>
-        </select>
-      </div>
-      <button onclick="fetchData()" class="bg-purple-600 px-8 py-3 rounded-xl font-bold hover:bg-purple-700 transition self-end">تحديث 🔄</button>
-      <button onclick="window.print()" class="bg-green-500 px-8 py-3 rounded-xl font-bold hover:bg-green-600 transition self-end">حفظ PDF 🖨️</button>
+  <div class="no-print max-w-4xl mx-auto mb-10 bg-white p-4 rounded-2xl shadow-lg flex flex-wrap gap-4 items-end">
+    <div class="flex-1 min-w-[200px]">
+      <label class="block text-slate-500 text-[10px] font-bold mb-2 uppercase tracking-widest text-right">اختر الطالب</label>
+      <select id="studentSelect" onchange="renderStudent()" class="w-full p-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-indigo-500">
+        <option value="">-- جاري التحميل --</option>
+      </select>
     </div>
+    <button onclick="fetchData()" class="bg-indigo-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-indigo-700 transition">تحديث البيانات 🔄</button>
+    <button onclick="window.print()" class="bg-slate-800 text-white px-8 py-3 rounded-xl font-bold hover:bg-slate-900 transition">حفظ PDF 🖨️</button>
   </div>
 
-  <main id="reportArea" class="max-w-4xl mx-auto opacity-0 transition-opacity duration-700">
-    <header class="text-center mb-8 text-white">
-      <h1 class="text-4xl font-bold mb-2"><span id="titleName">Student</span>'s Progress</h1>
-      <p id="dispDate" class="opacity-80 font-light italic">Report Date: --</p>
-    </header>
-
-    <div class="report-card p-8 mb-8 flex items-center gap-6">
-      <div class="w-20 h-20 rounded-full bg-indigo-500 flex items-center justify-center text-4xl shadow-lg text-white font-bold">👨‍🎓</div>
-      <div>
-        <h2 id="cardName" class="text-3xl font-bold text-gray-800 tracking-tight">Name</h2>
-        <div class="mt-1"><span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold italic shadow-sm">🌟 Making Great Progress!</span></div>
-      </div>
+  <div id="reportArea" class="report-container opacity-0 transition-opacity duration-1000">
+    <div class="header-section">
+      <div class="text-sm opacity-50 mb-4 tracking-[0.3em] uppercase" id="dispDate">REPORT DATE</div>
+      <h1 class="text-5xl font-bold mb-2 tracking-tight" id="cardName">Student Name</h1>
+      <p class="text-indigo-400 font-medium tracking-widest uppercase text-[10px]">Comparative Performance Tracking</p>
     </div>
 
-    <div class="report-card p-8 md:p-10 space-y-8">
-      <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2 border-b pb-4">📊 Skills Analysis</h3>
-      <div class="space-y-6">
-        <div>
-          <div class="flex justify-between mb-2 font-bold text-gray-600 uppercase text-xs tracking-widest"><span>📖 Reading</span><span id="v-r" class="text-indigo-600 text-lg">0%</span></div>
-          <div class="h-4 bg-gray-100 rounded-full overflow-hidden shadow-inner"><div id="b-r" class="skill-bar bg-gradient-to-r from-indigo-400 to-indigo-600" style="width: 0%"></div></div>
-        </div>
-        <div>
-          <div class="flex justify-between mb-2 font-bold text-gray-600 uppercase text-xs tracking-widest"><span>📝 Vocabulary</span><span id="v-v" class="text-purple-600 text-lg">0%</span></div>
-          <div class="h-4 bg-gray-100 rounded-full overflow-hidden shadow-inner"><div id="b-v" class="skill-bar bg-gradient-to-r from-purple-400 to-purple-600" style="width: 0%"></div></div>
-        </div>
-        <div>
-          <div class="flex justify-between mb-2 font-bold text-gray-600 uppercase text-xs tracking-widest"><span>🎧 Listening</span><span id="v-l" class="text-pink-600 text-lg">0%</span></div>
-          <div class="h-4 bg-gray-100 rounded-full overflow-hidden shadow-inner"><div id="b-l" class="skill-bar bg-gradient-to-r from-pink-400 to-pink-600" style="width: 0%"></div></div>
-        </div>
-        <div>
-          <div class="flex justify-between mb-2 font-bold text-gray-600 uppercase text-xs tracking-widest"><span>🗣️ Speaking</span><span id="v-s" class="text-orange-600 text-lg">0%</span></div>
-          <div class="h-4 bg-gray-100 rounded-full overflow-hidden shadow-inner"><div id="b-s" class="skill-bar bg-gradient-to-r from-orange-400 to-orange-600" style="width: 0%"></div></div>
-        </div>
-        <div>
-          <div class="flex justify-between mb-2 font-bold text-gray-600 uppercase text-xs tracking-widest"><span>📏 Grammar</span><span id="v-g" class="text-emerald-600 text-lg">0%</span></div>
-          <div class="h-4 bg-gray-100 rounded-full overflow-hidden shadow-inner"><div id="b-g" class="skill-bar bg-gradient-to-r from-emerald-400 to-emerald-600" style="width: 0%"></div></div>
-        </div>
+    <div class="p-10">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="skillsGrid"></div>
+      <div class="mt-12 pt-8 border-t border-slate-100 text-center italic text-slate-400 text-sm">
+        Educational Consultant Team - Official Progress Document
       </div>
     </div>
-  </main>
+  </div>
 
   <script>
     const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0TrGJYR9ywCx79tzUu8JGiOASatbpL6EBUNsgZYjGBc0wtI_vbhGsayUhqU0YJOdmwkWZHgAIWNZY/pub?output=csv";
@@ -76,16 +54,21 @@
 
     async function fetchData() {
       try {
-        const response = await fetch(sheetURL + '&cache=' + Math.random());
+        const response = await fetch(sheetURL + '&cb=' + Math.random());
         const text = await response.text();
         const rows = text.split(/\r?\n/).filter(r => r.trim() !== "");
-        
         students = rows.slice(1).map(row => {
-          const cols = row.split(',').map(item => item.trim().replace(/^"|"$/g, ''));
+          const c = row.split(',').map(i => i.trim().replace(/^"|"$/g, ''));
           return {
-            name: cols[0],
-            r: cols[1], v: cols[2], l: cols[3], s: cols[4], g: cols[5],
-            date: cols[6]
+            name: c[0],
+            skills: [
+              { label: "Reading", now: c[1], old: c[2], color: "#6366f1", icon: "📖" },
+              { label: "Vocabulary", now: c[3], old: c[4], color: "#ec4899", icon: "📝" },
+              { label: "Listening", now: c[5], old: c[6], color: "#3b82f6", icon: "🎧" },
+              { label: "Speaking", now: c[7], old: c[8], color: "#f59e0b", icon: "🗣️" },
+              { label: "Grammar", now: c[9], old: c[10], color: "#10b981", icon: "📏" }
+            ],
+            date: c[11]
           };
         }).filter(s => s.name);
 
@@ -103,22 +86,44 @@
       const idx = document.getElementById('studentSelect').value;
       if (idx === "") return;
       const s = students[idx];
-      document.getElementById('reportArea').style.opacity = 1;
-      document.getElementById('titleName').innerText = s.name;
+      document.getElementById('reportArea').classList.remove('opacity-0');
       document.getElementById('cardName').innerText = s.name;
-      document.getElementById('dispDate').innerText = "Report Date: " + (s.date || "2026");
+      document.getElementById('dispDate').innerText = s.date || "2026";
 
-      const up = (vId, bId, val) => {
-        const n = val ? val.replace(/[^0-9]/g, '') : 0;
-        document.getElementById(vId).innerText = n + "%";
-        document.getElementById(bId).style.width = n + "%";
-      }
-      
-      up('v-r','b-r', s.r); up('v-v','b-v', s.v);
-      up('v-l','b-l', s.l); up('v-s','b-s', s.s);
-      up('v-g','b-g', s.g);
+      const grid = document.getElementById('skillsGrid');
+      grid.innerHTML = "";
+
+      s.skills.forEach(skill => {
+        const nowVal = parseInt(skill.now) || 0;
+        const oldVal = parseInt(skill.old) || 0;
+        const diff = nowVal - oldVal;
+        const trendIcon = diff >= 0 ? "▲" : "▼";
+        const trendClass = diff >= 0 ? "trend-up" : "trend-down";
+
+        grid.innerHTML += `
+          <div class="skill-card">
+            <div class="flex justify-between items-start mb-2">
+              <div>
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">${skill.label}</span>
+                <div class="text-2xl mt-1">${skill.icon}</div>
+              </div>
+              <div class="text-right">
+                <div class="text-2xl font-bold text-slate-800">${nowVal}%</div>
+                <span class="stat-badge ${trendClass}">${trendIcon} ${Math.abs(diff)}% diff</span>
+              </div>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" style="width: 0%; background: ${skill.color}" id="bar-${skill.label}"></div>
+            </div>
+            <div class="flex justify-between text-[10px] font-bold text-slate-400">
+              <span>Old: ${oldVal}%</span>
+              <span>New: ${nowVal}%</span>
+            </div>
+          </div>
+        `;
+        setTimeout(() => { document.getElementById('bar-'+skill.label).style.width = nowVal + "%"; }, 100);
+      });
     }
-
     window.onload = fetchData;
   </script>
 </body>
