@@ -28,12 +28,10 @@
       border: 1px solid #f1f5f9; 
       border-radius: 20px; 
       padding: 24px; 
-      transition: all 0.3s ease; 
     }
-    .progress-bar-bg { background: #f1f5f9; height: 12px; border-radius: 6px; overflow: hidden; }
-    .progress-bar-fill { height: 100%; border-radius: 6px; transition: width 1.5s ease-out; }
+    .progress-bar-bg { background: #f1f5f9; height: 10px; border-radius: 5px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; border-radius: 5px; transition: width 1.5s ease-out; }
     
-    /* إطار اللوجو العملاق */
     .logo-frame { 
       border-radius: 3.5rem;
       background: rgba(255, 255, 255, 0.03);
@@ -43,14 +41,15 @@
       box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
     }
     
-    .human-signature {
-      font-family: 'Inter', sans-serif;
-      color: #1a202c;
-      font-size: 2.2rem;
-      font-weight: 500;
-      letter-spacing: -2px;
-      transform: rotate(-3deg);
-      display: inline-block;
+    .human-signature { font-family: 'Inter', sans-serif; color: #1a202c; font-size: 2.2rem; font-weight: 500; letter-spacing: -2px; transform: rotate(-3deg); display: inline-block; }
+
+    /* ستايل بطاقة الهدف القادم */
+    .next-goal-card {
+      background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+      border: 2px dashed #f59e0b;
+      border-radius: 2rem;
+      padding: 2rem;
+      position: relative;
     }
 
     @media print { .no-print { display: none !important; } }
@@ -67,8 +66,7 @@
     </div>
     <div class="flex gap-2">
       <button onclick="fetchData()" class="bg-sky-600 hover:bg-sky-500 text-white px-6 py-4 rounded-2xl font-bold transition-all active:scale-95">Update 🔄</button>
-      <button onclick="downloadImage()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-4 rounded-2xl font-bold transition-all active:scale-95 shadow-lg shadow-emerald-100">Save Image 🖼️</button>
-      <button onclick="window.print()" class="bg-slate-900 hover:bg-slate-800 text-white px-6 py-4 rounded-2xl font-bold transition-all active:scale-95">PDF 🖨️</button>
+      <button onclick="downloadImage()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-4 rounded-2xl font-bold transition-all active:scale-95 shadow-lg shadow-emerald-100 text-sm">Save Image 🖼️</button>
     </div>
   </div>
 
@@ -77,66 +75,57 @@
       <div class="header-gradient p-12 flex flex-col items-center justify-center">
         <div class="mb-10 relative">
           <div class="absolute inset-0 bg-sky-500/20 blur-[100px] rounded-full"></div>
-          
           <div class="logo-frame relative w-80 h-80 flex items-center justify-center">
-            <img src="logo.png" alt="51Talk Official Logo" class="max-w-full max-h-full object-contain">
+            <img src="logo.png" alt="51Talk" class="max-w-full max-h-full object-contain">
           </div>
         </div>
-
         <div class="text-center">
-          <h2 class="text-xs uppercase font-bold tracking-[0.6em] text-sky-400/90 mb-4">English Progress Report</h2>
+          <span class="bg-sky-500/20 text-sky-300 text-[10px] px-4 py-1.5 rounded-full font-bold uppercase tracking-[0.3em] mb-4 inline-block border border-sky-500/30">Academic Performance Report</span>
           <h1 class="text-6xl md:text-8xl font-black tracking-tight mb-8" id="cardName">Student Name</h1>
           <div class="flex items-center justify-center gap-10 pt-6 border-t border-white/10">
-            <div class="text-center">
-              <p class="text-[10px] uppercase font-bold opacity-40 tracking-widest mb-1">Report Date</p>
-              <p class="text-sm font-bold text-white" id="dispDate">March 12, 2026</p>
-            </div>
+            <div><p class="text-[10px] uppercase font-bold opacity-40 tracking-widest mb-1">Report Date</p><p class="text-sm font-bold text-white" id="dispDate">-</p></div>
             <div class="w-px h-10 bg-white/10"></div>
-            <div class="text-center">
-              <p class="text-[10px] uppercase font-bold opacity-40 tracking-widest mb-1">Accreditation</p>
-              <p class="text-sm font-bold text-white">Official 51Talk Document</p>
-            </div>
+            <div><p class="text-[10px] uppercase font-bold opacity-40 tracking-widest mb-1">Status</p><p class="text-sm font-bold text-emerald-400">On Track</p></div>
           </div>
         </div>
       </div>
 
-      <div class="p-8 md:p-14 space-y-12 bg-white rounded-b-[24px]">
+      <div class="p-8 md:p-14 space-y-10 bg-white rounded-b-[24px]">
+        
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8 items-center bg-slate-50 p-10 rounded-[2.5rem] border border-slate-100">
           <div class="flex items-center gap-5 col-span-1 md:col-span-2">
-            <div class="w-20 h-20 bg-white text-sky-600 rounded-2xl flex items-center justify-center text-4xl shadow-sm border border-slate-100">🎓</div>
-            <div>
-              <h3 class="font-bold text-slate-900 text-2xl">Performance Summary</h3>
-              <p class="text-slate-500 text-sm">Comprehensive assessment of language skills.</p>
-            </div>
+            <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-3xl shadow-sm border border-slate-100">🏆</div>
+            <div><h3 class="font-bold text-slate-900 text-xl tracking-tight">Period Score</h3><p class="text-slate-500 text-xs">Averaged across all competencies.</p></div>
           </div>
-          <div class="text-center md:border-r border-slate-200 px-4">
-            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Overall Grade</p>
-            <span class="text-6xl font-black text-sky-600" id="avgNow">0%</span>
-          </div>
-          <div class="text-center px-4">
-            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Total Progress</p>
-            <div class="flex items-center justify-center gap-3">
-              <span class="text-5xl font-bold text-slate-800" id="avgDiff">0%</span>
-              <span id="avgTrendIcon" class="text-3xl"></span>
-            </div>
-          </div>
+          <div class="text-center md:border-r border-slate-200 px-4"><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Grade</p><span class="text-5xl font-black text-sky-600" id="avgNow">0%</span></div>
+          <div class="text-center px-4"><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Growth</p><div class="flex items-center justify-center gap-2"><span class="text-4xl font-bold text-slate-800" id="avgDiff">0%</span><span id="avgTrendIcon"></span></div></div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8" id="skillsGrid"></div>
-        
-        <div class="mt-20 pt-12 border-t border-slate-100 flex justify-between items-end">
-          <div class="bg-slate-50 px-6 py-4 rounded-2xl border border-slate-100">
-            <p class="text-slate-400 text-[10px] font-bold tracking-widest uppercase mb-2">Verified Academic Status</p>
-            <div class="flex items-center gap-2">
-              <div class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></div>
-              <span class="text-slate-900 font-bold text-sm">Valid Progress Record</span>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="skillsGrid"></div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-slate-50 p-8 rounded-[2rem] border border-slate-100 flex flex-col justify-center">
+                <h4 class="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em] mb-4">Consultant Feedback</h4>
+                <p id="studentNote" class="text-slate-700 italic text-lg leading-relaxed">Keep up the great work!</p>
             </div>
+            
+            <div class="next-goal-card">
+                <div class="absolute top-0 right-0 p-6 opacity-20 text-4xl">🚀</div>
+                <h4 class="text-amber-900 font-bold text-[10px] uppercase tracking-[0.2em] mb-3">Next Milestone</h4>
+                <p id="nextGoal" class="text-amber-900 font-black text-2xl leading-tight">Level 2: Intermediate Mastery</p>
+                <p class="text-amber-700/60 text-[10px] mt-4 font-bold uppercase tracking-wider italic">* Recommended based on current progress</p>
+            </div>
+        </div>
+        
+        <div class="mt-16 pt-10 border-t border-slate-100 flex justify-between items-end">
+          <div class="text-left">
+            <p class="text-slate-400 text-[10px] font-bold tracking-widest uppercase mb-1">Official Document</p>
+            <p class="text-slate-900 font-mono text-[9px] opacity-40 tracking-tighter">CERT-51T-VERIFIED-2026</p>
           </div>
           <div class="text-right">
-            <p class="text-slate-400 text-[10px] font-bold tracking-widest uppercase mb-2 text-center">Approved By</p>
-            <div class="mb-2"><span class="human-signature">D. Consultant</span></div>
-            <div class="h-0.5 w-56 ml-auto bg-slate-900/10 mb-2"></div>
-            <p class="text-slate-900 font-black text-sm uppercase tracking-tighter">Educational Consultant Team</p>
+            <div class="mb-1"><span class="human-signature">D. Consultant</span></div>
+            <div class="h-0.5 w-48 ml-auto bg-slate-900/10 mb-2"></div>
+            <p class="text-slate-900 font-black text-xs uppercase tracking-tighter text-center">Educational Consultant Team</p>
           </div>
         </div>
       </div>
@@ -169,13 +158,15 @@
           return {
             name: c[0],
             skills: [
-              { label: "Reading", now: c[1], old: c[2], color: "linear-gradient(90deg, #6366f1, #818cf8)", icon: "📖" },
-              { label: "Vocabulary", now: c[3], old: c[4], color: "linear-gradient(90deg, #ec4899, #f472b6)", icon: "📝" },
-              { label: "Listening", now: c[5], old: c[6], color: "linear-gradient(90deg, #3b82f6, #60a5fa)", icon: "🎧" },
-              { label: "Speaking", now: c[7], old: c[8], color: "linear-gradient(90deg, #f59e0b, #fbbf24)", icon: "🗣️" },
-              { label: "Grammar", now: c[9], old: c[10], color: "linear-gradient(90deg, #10b981, #34d399)", icon: "📏" }
+              { label: "Reading", now: c[1], old: c[2], color: "#6366f1", icon: "📖" },
+              { label: "Vocab", now: c[3], old: c[4], color: "#ec4899", icon: "📝" },
+              { label: "Listening", now: c[5], old: c[6], color: "#3b82f6", icon: "🎧" },
+              { label: "Speaking", now: c[7], old: c[8], color: "#f59e0b", icon: "🗣️" },
+              { label: "Grammar", now: c[9], old: c[10], color: "#10b981", icon: "📏" }
             ],
-            date: c[11]
+            date: c[11],
+            note: c[12], // Column M
+            goal: c[13]  // Column N (NEW)
           };
         }).filter(s => s.name);
 
@@ -195,7 +186,9 @@
       const s = students[idx];
       document.getElementById('reportArea').classList.remove('opacity-0');
       document.getElementById('cardName').innerText = s.name;
-      document.getElementById('dispDate').innerText = s.date || "March 12, 2026";
+      document.getElementById('dispDate').innerText = s.date || "-";
+      document.getElementById('studentNote').innerText = s.note || "Great progress! Keep up the effort.";
+      document.getElementById('nextGoal').innerText = s.goal || "Level Up: Ready for Next Step";
 
       let sumNow = 0, sumDiff = 0, count = 0;
       const grid = document.getElementById('skillsGrid');
@@ -208,19 +201,11 @@
         sumNow += nowVal; sumDiff += diff; count++;
         grid.innerHTML += `
           <div class="skill-card">
-            <div class="flex justify-between items-start mb-4">
-              <div class="flex items-center gap-4">
-                <div class="text-3xl w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center border border-slate-100">${skill.icon}</div>
-                <span class="text-xs font-black text-slate-400 uppercase tracking-widest">${skill.label}</span>
-              </div>
-              <div class="text-right">
-                <span class="text-[0.75rem] font-bold px-3 py-1 rounded-full ${diff >= 0 ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}">${diff >= 0 ? '▲' : '▼'} ${Math.abs(diff)}%</span>
-              </div>
+            <div class="flex justify-between items-center mb-3">
+              <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">${skill.label}</span>
+              <span class="text-[9px] font-bold px-2 py-0.5 rounded-md ${diff >= 0 ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}">${diff >= 0 ? '▲' : '▼'} ${Math.abs(diff)}%</span>
             </div>
-            <div class="flex justify-between items-end mb-3">
-              <div class="text-4xl font-bold text-slate-900">${nowVal}<span class="text-xl opacity-30">%</span></div>
-              <div class="text-[10px] font-bold text-slate-400 uppercase">Prev: ${oldVal}%</div>
-            </div>
+            <div class="text-3xl font-bold text-slate-900 mb-2">${nowVal}%</div>
             <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 0%; background: ${skill.color}" id="bar-${skill.label}"></div></div>
           </div>
         `;
@@ -231,7 +216,7 @@
       document.getElementById('avgNow').innerText = avgNow + "%";
       document.getElementById('avgDiff').innerText = Math.abs(avgDiff) + "%";
       document.getElementById('avgTrendIcon').innerText = avgDiff >= 0 ? "📈" : "📉";
-      document.getElementById('avgTrendIcon').className = avgDiff >= 0 ? "text-emerald-500 text-3xl" : "text-rose-500 text-3xl";
+      document.getElementById('avgTrendIcon').className = avgDiff >= 0 ? "text-emerald-500" : "text-rose-500";
     }
     window.onload = fetchData;
   </script>
