@@ -41,7 +41,6 @@
       box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
     }
     
-    /* ستايل التوقيع ليدعم الأسماء الطويلة */
     .human-signature { 
       font-family: 'Inter', sans-serif; 
       color: #1a202c; 
@@ -51,6 +50,13 @@
       transform: rotate(-1.5deg); 
       display: inline-block;
       white-space: nowrap;
+    }
+
+    /* الحل لمشكلة نزول الأرقام: منع التفاف النص وتحديد التوقيت */
+    .no-wrap-fix {
+      display: inline-flex !important;
+      align-items: baseline;
+      white-space: nowrap !important;
     }
 
     .next-goal-card {
@@ -108,17 +114,17 @@
           </div>
           <div class="text-center md:border-r border-slate-200 px-4">
             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Grade</p>
-            <div class="flex items-baseline justify-center gap-0.5">
+            <div class="no-wrap-fix">
               <span class="text-5xl font-black text-sky-600" id="avgNow">0</span>
-              <span class="text-2xl font-black text-sky-600">%</span>
+              <span class="text-2xl font-black text-sky-600 ml-0.5">%</span>
             </div>
           </div>
           <div class="text-center px-4">
             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Growth</p>
-            <div class="flex items-baseline justify-center gap-1">
+            <div class="no-wrap-fix">
               <span class="text-4xl font-bold text-slate-800" id="avgDiff">0</span>
-              <span class="text-xl font-bold text-slate-800">%</span>
-              <span id="avgTrendIcon" class="ml-1 text-2xl"></span>
+              <span class="text-xl font-bold text-slate-800 ml-0.5">%</span>
+              <span id="avgTrendIcon" class="ml-2 text-2xl"></span>
             </div>
           </div>
         </div>
@@ -134,7 +140,7 @@
             <div class="next-goal-card">
                 <div class="absolute top-0 right-0 p-6 opacity-20 text-4xl">🚀</div>
                 <h4 class="text-amber-900 font-bold text-[10px] uppercase tracking-[0.2em] mb-3">Next Milestone</h4>
-                <p id="nextGoal" class="text-amber-900 font-black text-2xl leading-tight">Level Up</p>
+                <p id="nextGoal" class="text-amber-900 font-black text-2xl leading-tight">Next Level</p>
                 <p class="text-amber-700/60 text-[10px] mt-4 font-bold uppercase tracking-wider italic">* Recommended based on current progress</p>
             </div>
         </div>
@@ -162,7 +168,15 @@
       const target = document.getElementById('captureTarget');
       const studentName = document.getElementById('cardName').innerText;
       window.scrollTo(0,0);
-      html2canvas(target, { scale: 2, useCORS: true, backgroundColor: "#ffffff" }).then(canvas => {
+      
+      // تحسين عملية الحفظ لمنع التشويه
+      html2canvas(target, { 
+        scale: 2, 
+        useCORS: true, 
+        backgroundColor: "#ffffff",
+        logging: false,
+        letterRendering: true
+      }).then(canvas => {
         const link = document.createElement('a');
         link.download = `51Talk_Report_${studentName}.png`;
         link.href = canvas.toDataURL("image/png");
@@ -174,11 +188,8 @@
       try {
         const response = await fetch(sheetURL + '&cache=' + new Date().getTime());
         const text = await response.text();
-        
-        // تعديل منطق تقسيم السطر (CSV Parsing) ليدعم النصوص الطويلة والمسافات
         const rows = text.split(/\r?\n/).filter(r => r.trim() !== "");
         students = rows.slice(1).map(row => {
-          // استخدام وظيفة تقسيم ذكية تتعامل مع الفواصل والمسافات
           const c = parseCSVRow(row);
           return {
             name: c[0] || "Unknown",
@@ -206,7 +217,6 @@
       } catch (e) { console.error(e); }
     }
 
-    // وظيفة مساعدة لتقسيم السطر بشكل صحيح
     function parseCSVRow(text) {
         let results = [];
         let current = '';
@@ -230,16 +240,14 @@
       document.getElementById('reportArea').classList.remove('opacity-0');
       document.getElementById('cardName').innerText = s.name;
       document.getElementById('dispDate').innerText = s.date;
-      document.getElementById('studentNote').innerText = s.note;
       
-      // حل مشكلة المايلستون - إضافة كلمة Level تلقائياً إذا كان المدخل رقم فقط
+      // تصحيح كلمة Focus إملائياً وتحديث الملاحظة
+      let finalNote = s.note || "Keep up the great work!";
+      document.getElementById('studentNote').innerText = finalNote.replace(/Foucs/g, 'Focus');
+      
       let goalText = s.goal;
-      if (!isNaN(goalText) && goalText !== "") {
-          goalText = "Level " + goalText;
-      }
+      if (!isNaN(goalText) && goalText !== "") goalText = "Level " + goalText;
       document.getElementById('nextGoal').innerText = goalText || "Next Level";
-      
-      // تحديث اسم المستشار (يقبل الآن الاسم الثلاثي)
       document.getElementById('consultantNameDisplay').innerText = s.consultant;
 
       let sumNow = 0, sumDiff = 0, count = 0;
@@ -257,9 +265,9 @@
               <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">${skill.label}</span>
               <span class="text-[9px] font-bold px-2 py-0.5 rounded-md ${diff >= 0 ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}">${diff >= 0 ? '▲' : '▼'} ${Math.abs(diff)}%</span>
             </div>
-            <div class="flex items-baseline gap-0.5 mb-2">
+            <div class="no-wrap-fix mb-2">
               <span class="text-3xl font-bold text-slate-900">${nowVal}</span>
-              <span class="text-xl font-bold text-slate-900 opacity-60">%</span>
+              <span class="text-xl font-bold text-slate-900 opacity-60 ml-0.5">%</span>
             </div>
             <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 0%; background: ${skill.color}" id="bar-${skill.label}"></div></div>
           </div>
@@ -269,13 +277,14 @@
             if(bar) bar.style.width = nowVal + "%"; 
         }, 150);
       });
+      
       const avgNow = Math.round(sumNow / count);
       const avgDiff = Math.round(sumDiff / count);
       
       document.getElementById('avgNow').innerText = avgNow;
       document.getElementById('avgDiff').innerText = Math.abs(avgDiff);
       document.getElementById('avgTrendIcon').innerText = avgDiff >= 0 ? "📈" : "📉";
-      document.getElementById('avgTrendIcon').className = avgDiff >= 0 ? "text-emerald-500 text-2xl ml-1" : "text-rose-500 text-2xl ml-1";
+      document.getElementById('avgTrendIcon').className = avgDiff >= 0 ? "text-emerald-500 text-2xl ml-2" : "text-rose-500 text-2xl ml-2";
     }
     window.onload = fetchData;
   </script>
