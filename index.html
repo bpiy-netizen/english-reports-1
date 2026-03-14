@@ -41,7 +41,17 @@
       box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
     }
     
-    .human-signature { font-family: 'Inter', sans-serif; color: #1a202c; font-size: 1.8rem; font-weight: 500; letter-spacing: -1px; transform: rotate(-2deg); display: inline-block; }
+    /* ستايل التوقيع ليدعم الأسماء الطويلة */
+    .human-signature { 
+      font-family: 'Inter', sans-serif; 
+      color: #1a202c; 
+      font-size: 1.6rem; 
+      font-weight: 600; 
+      letter-spacing: -1px; 
+      transform: rotate(-1.5deg); 
+      display: inline-block;
+      white-space: nowrap;
+    }
 
     .next-goal-card {
       background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
@@ -124,7 +134,7 @@
             <div class="next-goal-card">
                 <div class="absolute top-0 right-0 p-6 opacity-20 text-4xl">🚀</div>
                 <h4 class="text-amber-900 font-bold text-[10px] uppercase tracking-[0.2em] mb-3">Next Milestone</h4>
-                <p id="nextGoal" class="text-amber-900 font-black text-2xl leading-tight">Level 2: Intermediate Mastery</p>
+                <p id="nextGoal" class="text-amber-900 font-black text-2xl leading-tight">Level Up</p>
                 <p class="text-amber-700/60 text-[10px] mt-4 font-bold uppercase tracking-wider italic">* Recommended based on current progress</p>
             </div>
         </div>
@@ -135,7 +145,7 @@
             <p class="text-slate-900 font-mono text-[9px] opacity-40 tracking-tighter">CERT-51T-VERIFIED-2026</p>
           </div>
           <div class="text-right">
-            <div class="mb-1"><span id="consultantNameDisplay" class="human-signature">D. Consultant</span></div>
+            <div class="mb-1"><span id="consultantNameDisplay" class="human-signature">Consultant Name</span></div>
             <div class="h-0.5 w-48 ml-auto bg-slate-900/10 mb-2"></div>
             <p class="text-slate-900 font-black text-xs uppercase tracking-tighter text-center">Educational Consultant Team</p>
           </div>
@@ -164,23 +174,25 @@
       try {
         const response = await fetch(sheetURL + '&cache=' + new Date().getTime());
         const text = await response.text();
+        
+        // تعديل منطق تقسيم السطر (CSV Parsing) ليدعم النصوص الطويلة والمسافات
         const rows = text.split(/\r?\n/).filter(r => r.trim() !== "");
         students = rows.slice(1).map(row => {
-          // استخدام regex لضمان تقسيم البيانات بشكل صحيح حتى مع وجود فواصل داخل النصوص
-          const c = row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g).map(i => i.trim().replace(/^"|"$/g, ''));
+          // استخدام وظيفة تقسيم ذكية تتعامل مع الفواصل والمسافات
+          const c = parseCSVRow(row);
           return {
-            name: c[0],
+            name: c[0] || "Unknown",
             skills: [
-              { label: "Reading", now: c[1], old: c[2], color: "#6366f1", icon: "📖" },
-              { label: "Vocab", now: c[3], old: c[4], color: "#ec4899", icon: "📝" },
-              { label: "Listening", now: c[5], old: c[6], color: "#3b82f6", icon: "🎧" },
-              { label: "Speaking", now: c[7], old: c[8], color: "#f59e0b", icon: "🗣️" },
-              { label: "Grammar", now: c[9], old: c[10], color: "#10b981", icon: "📏" }
+              { label: "Reading", now: c[1] || 0, old: c[2] || 0, color: "#6366f1", icon: "📖" },
+              { label: "Vocab", now: c[3] || 0, old: c[4] || 0, color: "#ec4899", icon: "📝" },
+              { label: "Listening", now: c[5] || 0, old: c[6] || 0, color: "#3b82f6", icon: "🎧" },
+              { label: "Speaking", now: c[7] || 0, old: c[8] || 0, color: "#f59e0b", icon: "🗣️" },
+              { label: "Grammar", now: c[9] || 0, old: c[10] || 0, color: "#10b981", icon: "📏" }
             ],
-            date: c[11],
-            note: c[12], 
-            goal: c[13],
-            consultant: c[14] // العمود O
+            date: c[11] || "-",
+            note: c[12] || "Great progress! Keep up the effort.", 
+            goal: c[13] || "",
+            consultant: c[14] || "Educational Consultant"
           };
         }).filter(s => s.name);
 
@@ -194,18 +206,41 @@
       } catch (e) { console.error(e); }
     }
 
+    // وظيفة مساعدة لتقسيم السطر بشكل صحيح
+    function parseCSVRow(text) {
+        let results = [];
+        let current = '';
+        let inQuotes = false;
+        for (let i = 0; i < text.length; i++) {
+            let char = text[i];
+            if (char === '"') inQuotes = !inQuotes;
+            else if (char === ',' && !inQuotes) {
+                results.push(current.trim());
+                current = '';
+            } else current += char;
+        }
+        results.push(current.trim());
+        return results;
+    }
+
     function renderStudent() {
       const idx = document.getElementById('studentSelect').value;
       if (idx === "") return;
       const s = students[idx];
       document.getElementById('reportArea').classList.remove('opacity-0');
       document.getElementById('cardName').innerText = s.name;
-      document.getElementById('dispDate').innerText = s.date || "-";
-      document.getElementById('studentNote').innerText = s.note || "Great progress! Keep up the effort.";
-      document.getElementById('nextGoal').innerText = s.goal || "Level Up: Ready for Next Step";
+      document.getElementById('dispDate').innerText = s.date;
+      document.getElementById('studentNote').innerText = s.note;
       
-      // تحديث اسم المستشار التعليمي من العمود O
-      document.getElementById('consultantNameDisplay').innerText = s.consultant || "D. Consultant";
+      // حل مشكلة المايلستون - إضافة كلمة Level تلقائياً إذا كان المدخل رقم فقط
+      let goalText = s.goal;
+      if (!isNaN(goalText) && goalText !== "") {
+          goalText = "Level " + goalText;
+      }
+      document.getElementById('nextGoal').innerText = goalText || "Next Level";
+      
+      // تحديث اسم المستشار (يقبل الآن الاسم الثلاثي)
+      document.getElementById('consultantNameDisplay').innerText = s.consultant;
 
       let sumNow = 0, sumDiff = 0, count = 0;
       const grid = document.getElementById('skillsGrid');
