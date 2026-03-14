@@ -41,7 +41,7 @@
       box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
     }
     
-    .human-signature { font-family: 'Inter', sans-serif; color: #1a202c; font-size: 2.2rem; font-weight: 500; letter-spacing: -2px; transform: rotate(-3deg); display: inline-block; }
+    .human-signature { font-family: 'Inter', sans-serif; color: #1a202c; font-size: 1.8rem; font-weight: 500; letter-spacing: -1px; transform: rotate(-2deg); display: inline-block; }
 
     .next-goal-card {
       background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
@@ -135,7 +135,7 @@
             <p class="text-slate-900 font-mono text-[9px] opacity-40 tracking-tighter">CERT-51T-VERIFIED-2026</p>
           </div>
           <div class="text-right">
-            <div class="mb-1"><span class="human-signature">D. Consultant</span></div>
+            <div class="mb-1"><span id="consultantNameDisplay" class="human-signature">D. Consultant</span></div>
             <div class="h-0.5 w-48 ml-auto bg-slate-900/10 mb-2"></div>
             <p class="text-slate-900 font-black text-xs uppercase tracking-tighter text-center">Educational Consultant Team</p>
           </div>
@@ -166,7 +166,8 @@
         const text = await response.text();
         const rows = text.split(/\r?\n/).filter(r => r.trim() !== "");
         students = rows.slice(1).map(row => {
-          const c = row.split(',').map(i => i.trim().replace(/^"|"$/g, ''));
+          // استخدام regex لضمان تقسيم البيانات بشكل صحيح حتى مع وجود فواصل داخل النصوص
+          const c = row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g).map(i => i.trim().replace(/^"|"$/g, ''));
           return {
             name: c[0],
             skills: [
@@ -178,7 +179,8 @@
             ],
             date: c[11],
             note: c[12], 
-            goal: c[13] 
+            goal: c[13],
+            consultant: c[14] // العمود O
           };
         }).filter(s => s.name);
 
@@ -201,6 +203,9 @@
       document.getElementById('dispDate').innerText = s.date || "-";
       document.getElementById('studentNote').innerText = s.note || "Great progress! Keep up the effort.";
       document.getElementById('nextGoal').innerText = s.goal || "Level Up: Ready for Next Step";
+      
+      // تحديث اسم المستشار التعليمي من العمود O
+      document.getElementById('consultantNameDisplay').innerText = s.consultant || "D. Consultant";
 
       let sumNow = 0, sumDiff = 0, count = 0;
       const grid = document.getElementById('skillsGrid');
@@ -232,7 +237,6 @@
       const avgNow = Math.round(sumNow / count);
       const avgDiff = Math.round(sumDiff / count);
       
-      // تطبيق الأرقام بدون علامة % مدمجة في الـ innerText لمنع النزول
       document.getElementById('avgNow').innerText = avgNow;
       document.getElementById('avgDiff').innerText = Math.abs(avgDiff);
       document.getElementById('avgTrendIcon').innerText = avgDiff >= 0 ? "📈" : "📉";
