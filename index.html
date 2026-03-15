@@ -41,7 +41,23 @@
       box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
     }
     
-    /* ستايل التوقيع ليدعم الأسماء الطويلة */
+    /* تثبيت الأرقام والنسبة المئوية عند الحفظ كصورة */
+    .stat-container {
+      display: flex !important;
+      align-items: baseline !important;
+      justify-content: flex-start;
+      gap: 2px;
+      white-space: nowrap !important;
+    }
+
+    /* تكبير الأيقونات بجانب المهارات */
+    .skill-emoji {
+      font-size: 1.5rem; 
+      margin-right: 10px;
+      display: inline-block;
+      line-height: 1;
+    }
+
     .human-signature { 
       font-family: 'Inter', sans-serif; 
       color: #1a202c; 
@@ -84,8 +100,8 @@
       <div class="header-gradient p-12 flex flex-col items-center justify-center">
         <div class="mb-10 relative">
           <div class="absolute inset-0 bg-sky-500/20 blur-[100px] rounded-full"></div>
-          <div class="logo-frame relative w-80 h-80 flex items-center justify-center">
-            <img src="logo.png" alt="51Talk" class="max-w-full max-h-full object-contain">
+          <div class="logo-frame relative w-72 h-72 flex items-center justify-center">
+             <img src="https://i.ibb.co/m0S8m8S/51talk-logo.png" alt="51Talk" class="w-48 h-48 object-contain">
           </div>
         </div>
         <div class="text-center">
@@ -108,14 +124,14 @@
           </div>
           <div class="text-center md:border-r border-slate-200 px-4">
             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Grade</p>
-            <div class="flex items-baseline justify-center gap-0.5">
+            <div class="stat-container justify-center">
               <span class="text-5xl font-black text-sky-600" id="avgNow">0</span>
               <span class="text-2xl font-black text-sky-600">%</span>
             </div>
           </div>
           <div class="text-center px-4">
             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Growth</p>
-            <div class="flex items-baseline justify-center gap-1">
+            <div class="stat-container justify-center">
               <span class="text-4xl font-bold text-slate-800" id="avgDiff">0</span>
               <span class="text-xl font-bold text-slate-800">%</span>
               <span id="avgTrendIcon" class="ml-1 text-2xl"></span>
@@ -174,25 +190,22 @@
       try {
         const response = await fetch(sheetURL + '&cache=' + new Date().getTime());
         const text = await response.text();
-        
-        // تعديل منطق تقسيم السطر (CSV Parsing) ليدعم النصوص الطويلة والمسافات
         const rows = text.split(/\r?\n/).filter(r => r.trim() !== "");
         students = rows.slice(1).map(row => {
-          // استخدام وظيفة تقسيم ذكية تتعامل مع الفواصل والمسافات
           const c = parseCSVRow(row);
           return {
             name: c[0] || "Unknown",
             skills: [
               { label: "Reading", now: c[1] || 0, old: c[2] || 0, color: "#6366f1", icon: "📖" },
-              { label: "Vocab", now: c[3] || 0, old: c[4] || 0, color: "#ec4899", icon: "📝" },
+              { label: "Vocabulary", now: c[3] || 0, old: c[4] || 0, color: "#ec4899", icon: "📝" },
               { label: "Listening", now: c[5] || 0, old: c[6] || 0, color: "#3b82f6", icon: "🎧" },
               { label: "Speaking", now: c[7] || 0, old: c[8] || 0, color: "#f59e0b", icon: "🗣️" },
               { label: "Grammar", now: c[9] || 0, old: c[10] || 0, color: "#10b981", icon: "📏" }
             ],
             date: c[11] || "-",
-            note: c[12] || "Great progress! Keep up the effort.", 
+            note: c[12] || "Great progress!", 
             goal: c[13] || "",
-            consultant: c[14] || "Educational Consultant"
+            consultant: c[14] || "Educational Consultant" // تم التأكد من جلب العمود 15
           };
         }).filter(s => s.name);
 
@@ -206,7 +219,6 @@
       } catch (e) { console.error(e); }
     }
 
-    // وظيفة مساعدة لتقسيم السطر بشكل صحيح
     function parseCSVRow(text) {
         let results = [];
         let current = '';
@@ -230,16 +242,15 @@
       document.getElementById('reportArea').classList.remove('opacity-0');
       document.getElementById('cardName').innerText = s.name;
       document.getElementById('dispDate').innerText = s.date;
-      document.getElementById('studentNote').innerText = s.note;
       
-      // حل مشكلة المايلستون - إضافة كلمة Level تلقائياً إذا كان المدخل رقم فقط
+      let rawNote = s.note || "Keep up the great work!";
+      document.getElementById('studentNote').innerText = rawNote.replace(/Foucs/g, 'Focus');
+      
       let goalText = s.goal;
-      if (!isNaN(goalText) && goalText !== "") {
-          goalText = "Level " + goalText;
-      }
+      if (!isNaN(goalText) && goalText !== "") goalText = "Level " + goalText;
       document.getElementById('nextGoal').innerText = goalText || "Next Level";
       
-      // تحديث اسم المستشار (يقبل الآن الاسم الثلاثي)
+      // هنا تم تحديث الربط المباشر لاسم المستشار
       document.getElementById('consultantNameDisplay').innerText = s.consultant;
 
       let sumNow = 0, sumDiff = 0, count = 0;
@@ -253,11 +264,15 @@
         sumNow += nowVal; sumDiff += diff; count++;
         grid.innerHTML += `
           <div class="skill-card">
-            <div class="flex justify-between items-center mb-3">
-              <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">${skill.label}</span>
-              <span class="text-[9px] font-bold px-2 py-0.5 rounded-md ${diff >= 0 ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}">${diff >= 0 ? '▲' : '▼'} ${Math.abs(diff)}%</span>
+            <div class="flex justify-between items-center mb-4">
+              <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center">
+                <span class="skill-emoji">${skill.icon}</span> ${skill.label}
+              </span>
+              <span class="text-[9px] font-bold px-2 py-0.5 rounded-md ${diff >= 0 ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}">
+                ${diff >= 0 ? '▲' : '▼'} ${Math.abs(diff)}%
+              </span>
             </div>
-            <div class="flex items-baseline gap-0.5 mb-2">
+            <div class="stat-container mb-3">
               <span class="text-3xl font-bold text-slate-900">${nowVal}</span>
               <span class="text-xl font-bold text-slate-900 opacity-60">%</span>
             </div>
@@ -269,9 +284,9 @@
             if(bar) bar.style.width = nowVal + "%"; 
         }, 150);
       });
+      
       const avgNow = Math.round(sumNow / count);
       const avgDiff = Math.round(sumDiff / count);
-      
       document.getElementById('avgNow').innerText = avgNow;
       document.getElementById('avgDiff').innerText = Math.abs(avgDiff);
       document.getElementById('avgTrendIcon').innerText = avgDiff >= 0 ? "📈" : "📉";
