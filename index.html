@@ -32,7 +32,6 @@
     .progress-bar-bg { background: #f1f5f9; height: 10px; border-radius: 5px; overflow: hidden; }
     .progress-bar-fill { height: 100%; border-radius: 5px; transition: width 1.5s ease-out; }
     
-    /* تثبيت الأرقام والنسبة المئوية لضمان عدم التداخل عند الحفظ */
     .stat-container {
       display: flex !important;
       align-items: baseline !important;
@@ -48,16 +47,16 @@
       line-height: 1;
     }
 
+    /* تعديل إطار اللوغو ليكون أوضح وأرقى */
     .logo-frame { 
-      border-radius: 3.5rem;
-      background: rgba(255, 255, 255, 0.03);
-      backdrop-filter: blur(10px);
-      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 2.5rem;
+      background: rgba(255, 255, 255, 1); /* جعل الخلفية بيضاء صريحة لإظهار اللوجو بوضوح */
       padding: 1.5rem;
-      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
       display: flex;
       align-items: center;
       justify-content: center;
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
     .human-signature { 
@@ -101,11 +100,11 @@
     <div id="captureTarget">
       <div class="header-gradient p-12 flex flex-col items-center justify-center">
         <div class="mb-10 relative">
-          <div class="absolute inset-0 bg-sky-500/20 blur-[100px] rounded-full"></div>
-          <div class="logo-frame relative w-72 h-72">
-            <img src="https://www.51talk.com/ph/img/new_index/logo.png" 
+          <div class="absolute inset-0 bg-sky-400/30 blur-[60px] rounded-full"></div>
+          <div class="logo-frame relative w-64 h-32">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/51Talk_logo.png/640px-51Talk_logo.png" 
                  alt="51Talk Logo" 
-                 class="w-48 h-48 object-contain"
+                 class="w-full h-full object-contain"
                  crossorigin="anonymous">
           </div>
         </div>
