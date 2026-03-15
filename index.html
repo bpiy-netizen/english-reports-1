@@ -32,20 +32,34 @@
     .progress-bar-bg { background: #f1f5f9; height: 10px; border-radius: 5px; overflow: hidden; }
     .progress-bar-fill { height: 100%; border-radius: 5px; transition: width 1.5s ease-out; }
     
-    /* ستايل الأرقام لضمان الثبات التام */
+    /* تثبيت الأرقام والنسبة المئوية */
     .stat-container {
       display: flex !important;
       align-items: baseline !important;
       justify-content: flex-start;
-      gap: 2px;
+      gap: 1px;
       white-space: nowrap !important;
     }
 
-    /* تكبير الأيقونة */
+    /* تكبير الأيقونات */
     .skill-emoji {
-      font-size: 1.4rem; /* تكبير الأيقونة */
-      margin-right: 8px;
+      font-size: 1.5rem; 
+      margin-right: 10px;
       display: inline-block;
+      line-height: 1;
+    }
+
+    .logo-frame { 
+      border-radius: 3.5rem;
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      padding: 1.5rem;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
     }
 
     .human-signature { 
@@ -90,8 +104,8 @@
       <div class="header-gradient p-12 flex flex-col items-center justify-center">
         <div class="mb-10 relative">
           <div class="absolute inset-0 bg-sky-500/20 blur-[100px] rounded-full"></div>
-          <div class="logo-frame relative w-80 h-80 flex items-center justify-center text-white font-black text-4xl">
-             LOGO
+          <div class="logo-frame relative w-72 h-72">
+            <img src="https://i.ibb.co/m0S8m8S/51talk-logo.png" alt="51Talk Logo" class="w-48 h-48 object-contain">
           </div>
         </div>
         <div class="text-center">
@@ -140,7 +154,7 @@
             <div class="next-goal-card">
                 <div class="absolute top-0 right-0 p-6 opacity-20 text-4xl">🚀</div>
                 <h4 class="text-amber-900 font-bold text-[10px] uppercase tracking-[0.2em] mb-3">Next Milestone</h4>
-                <p id="nextGoal" class="text-amber-900 font-black text-2xl leading-tight">Level Up</p>
+                <p id="nextGoal" class="text-amber-900 font-black text-2xl leading-tight">Next Level</p>
                 <p class="text-amber-700/60 text-[10px] mt-4 font-bold uppercase tracking-wider italic">* Recommended based on current progress</p>
             </div>
         </div>
@@ -173,12 +187,8 @@
         scale: 2, 
         useCORS: true, 
         backgroundColor: "#ffffff",
-        scrollX: 0,
-        scrollY: -window.scrollY,
-        onclone: (clonedDoc) => {
-           // التأكد من أن جميع العناصر ثابتة في النسخة المنسوخة للتصوير
-           clonedDoc.getElementById('captureTarget').style.fontVariantNumeric = 'tabular-nums';
-        }
+        logging: false,
+        letterRendering: true
       }).then(canvas => {
         const link = document.createElement('a');
         link.download = `51Talk_Report_${studentName}.png`;
@@ -244,9 +254,8 @@
       document.getElementById('cardName').innerText = s.name;
       document.getElementById('dispDate').innerText = s.date;
       
-      // إصلاح تلقائي لكلمة Focus في الملاحظات
-      let rawNote = s.note || "Keep up the effort!";
-      document.getElementById('studentNote').innerText = rawNote.replace(/Foucs/g, 'Focus');
+      let finalNote = s.note || "Keep up the great work!";
+      document.getElementById('studentNote').innerText = finalNote.replace(/Foucs/g, 'Focus');
       
       let goalText = s.goal;
       if (!isNaN(goalText) && goalText !== "") goalText = "Level " + goalText;
