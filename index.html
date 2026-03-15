@@ -6,92 +6,149 @@
   <title>51Talk Official Progress Report</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
   <style>
     * { font-family: 'Inter', sans-serif; }
-    h1, h2 { font-family: 'Outfit', sans-serif; }
-    body { background: #f8fafc; min-height: 100vh; padding: 20px; }
-    .header-gradient { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 24px 24px 0 0; color: white; }
-    .report-card { background: #ffffff; border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1); max-width: 950px; margin: 0 auto; }
-    .skill-card { background: white; border: 1px solid #f1f5f9; border-radius: 20px; padding: 20px; }
-    .progress-bar-bg { background: #f1f5f9; height: 8px; border-radius: 4px; overflow: hidden; }
-    .progress-bar-fill { height: 100%; border-radius: 4px; transition: width 1s ease-in-out; }
-    .logo-frame { border-radius: 1.2rem; background: white; padding: 0.8rem; box-shadow: 0 10px 15px rgba(0,0,0,0.1); width: 160px; min-height: 60px; }
+    h1, h2, h3 { font-family: 'Outfit', sans-serif; }
+    body { background: #f3f4f6; min-height: 100vh; padding: 20px; color: #1f2937; }
+    
+    .header-gradient { 
+      background: linear-gradient(135deg, #111827 0%, #1f2937 100%); 
+      border-radius: 24px 24px 0 0; 
+      color: white; 
+    }
+    .report-card { 
+      background: #ffffff; 
+      border-radius: 24px; 
+      box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.1); 
+      max-width: 1000px; margin: 0 auto; 
+    }
+    .skill-card { 
+      background: white; 
+      border: 1px solid #f1f5f9; 
+      border-radius: 20px; 
+      padding: 24px; 
+    }
+    .progress-bar-bg { background: #f1f5f9; height: 10px; border-radius: 5px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; border-radius: 5px; transition: width 1.5s ease-out; }
+    
+    .logo-frame { 
+      border-radius: 3.5rem;
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      padding: 1.5rem;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+    }
+    
+    /* ستايل التوقيع ليدعم الأسماء الطويلة */
+    .human-signature { 
+      font-family: 'Inter', sans-serif; 
+      color: #1a202c; 
+      font-size: 1.6rem; 
+      font-weight: 600; 
+      letter-spacing: -1px; 
+      transform: rotate(-1.5deg); 
+      display: inline-block;
+      white-space: nowrap;
+    }
+
+    .next-goal-card {
+      background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+      border: 2px dashed #f59e0b;
+      border-radius: 2rem;
+      padding: 2rem;
+      position: relative;
+    }
+
     @media print { .no-print { display: none !important; } }
   </style>
 </head>
 <body>
 
-  <div class="no-print max-w-[950px] mx-auto mb-8 bg-white p-5 rounded-3xl shadow-lg flex flex-wrap gap-4 items-end border border-slate-100">
-    <div class="flex-1 min-w-[200px]">
-      <label class="block text-slate-400 text-[10px] font-bold mb-2 uppercase tracking-widest text-right">قائمة الطلاب / Student List</label>
-      <select id="studentSelect" onchange="renderStudent()" class="w-full p-3 rounded-xl border border-slate-200 font-bold text-slate-800 outline-none bg-slate-50">
-        <option value="">-- جاري تحميل البيانات... --</option>
+  <div class="no-print max-w-5xl mx-auto mb-10 bg-white p-6 rounded-3xl shadow-xl flex flex-wrap gap-4 items-end border border-slate-100">
+    <div class="flex-1 min-w-[250px]">
+      <label class="block text-slate-500 text-xs font-bold mb-3 uppercase tracking-[0.2em] text-right">Student Record Access</label>
+      <select id="studentSelect" onchange="renderStudent()" class="w-full p-4 rounded-2xl border border-slate-200 text-slate-900 font-bold focus:ring-4 focus:ring-sky-500/20 outline-none transition-all">
+        <option value="">-- Jari التحميل... --</option>
       </select>
     </div>
     <div class="flex gap-2">
-      <button onclick="fetchData()" class="bg-indigo-50 text-indigo-600 px-5 py-3 rounded-xl font-bold hover:bg-indigo-100 transition-all">Refresh 🔄</button>
-      <button onclick="downloadImage()" class="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:bg-black transition-all">Save Image 🖼️</button>
+      <button onclick="fetchData()" class="bg-sky-600 hover:bg-sky-500 text-white px-6 py-4 rounded-2xl font-bold transition-all active:scale-95">Update 🔄</button>
+      <button onclick="downloadImage()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-4 rounded-2xl font-bold transition-all active:scale-95 shadow-lg shadow-emerald-100 text-sm">Save Image 🖼️</button>
     </div>
   </div>
 
-  <div id="reportArea" class="report-card opacity-0 transition-opacity duration-700">
-    <div id="captureTarget" class="bg-white">
-      <div class="header-gradient p-10 flex flex-col items-center text-center">
-        <div class="mb-6 logo-frame flex items-center justify-center">
-          <img src="https://raw.githubusercontent.com/bpiy-netizen/english-reports-1/main/logo.png" id="logoImg" style="max-height: 60px; max-width: 140px;" alt="51Talk Logo">
+  <div id="reportArea" class="report-card opacity-0 transition-opacity duration-1000">
+    <div id="captureTarget">
+      <div class="header-gradient p-12 flex flex-col items-center justify-center">
+        <div class="mb-10 relative">
+          <div class="absolute inset-0 bg-sky-500/20 blur-[100px] rounded-full"></div>
+          <div class="logo-frame relative w-80 h-80 flex items-center justify-center">
+            <img src="logo.png" alt="51Talk" class="max-w-full max-h-full object-contain">
+          </div>
         </div>
-        <h1 class="text-3xl font-black tracking-tighter mb-1 uppercase italic text-white">Performance Progress Report</h1>
-        <p class="text-slate-400 text-sm font-medium uppercase tracking-[0.3em]">Official Certification</p>
+        <div class="text-center">
+          <span class="bg-sky-500/20 text-sky-300 text-[10px] px-4 py-1.5 rounded-full font-bold uppercase tracking-[0.3em] mb-4 inline-block border border-sky-500/30">Academic Performance Report</span>
+          <h1 class="text-6xl md:text-8xl font-black tracking-tight mb-8" id="cardName">Student Name</h1>
+          <div class="flex items-center justify-center gap-10 pt-6 border-t border-white/10">
+            <div><p class="text-[10px] uppercase font-bold opacity-40 tracking-widest mb-1">Report Date</p><p class="text-sm font-bold text-white" id="dispDate">-</p></div>
+            <div class="w-px h-10 bg-white/10"></div>
+            <div><p class="text-[10px] uppercase font-bold opacity-40 tracking-widest mb-1">Status</p><p class="text-sm font-bold text-emerald-400">On Track</p></div>
+          </div>
+        </div>
       </div>
 
-      <div class="p-10">
-        <div class="flex justify-between items-end mb-10 pb-8 border-b border-slate-50">
-          <div>
-            <h2 id="cardName" class="text-5xl font-black text-slate-900 mb-1 italic">Student Name</h2>
-            <div class="flex items-center gap-2">
-                <span class="w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></span>
-                <p class="text-slate-500 font-bold uppercase text-xs tracking-widest">Active Academic Path</p>
+      <div class="p-8 md:p-14 space-y-10 bg-white rounded-b-[24px]">
+        
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 items-center bg-slate-50 p-10 rounded-[2.5rem] border border-slate-100">
+          <div class="flex items-center gap-5 col-span-1 md:col-span-2">
+            <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-3xl shadow-sm border border-slate-100">🏆</div>
+            <div><h3 class="font-bold text-slate-900 text-xl tracking-tight">Period Score</h3><p class="text-slate-500 text-xs">Averaged across all competencies.</p></div>
+          </div>
+          <div class="text-center md:border-r border-slate-200 px-4">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Grade</p>
+            <div class="flex items-baseline justify-center gap-0.5">
+              <span class="text-5xl font-black text-sky-600" id="avgNow">0</span>
+              <span class="text-2xl font-black text-sky-600">%</span>
             </div>
+          </div>
+          <div class="text-center px-4">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Growth</p>
+            <div class="flex items-baseline justify-center gap-1">
+              <span class="text-4xl font-bold text-slate-800" id="avgDiff">0</span>
+              <span class="text-xl font-bold text-slate-800">%</span>
+              <span id="avgTrendIcon" class="ml-1 text-2xl"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="skillsGrid"></div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-slate-50 p-8 rounded-[2rem] border border-slate-100 flex flex-col justify-center">
+                <h4 class="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em] mb-4">Consultant Feedback</h4>
+                <p id="studentNote" class="text-slate-700 italic text-lg leading-relaxed">Keep up the great work!</p>
+            </div>
+            
+            <div class="next-goal-card">
+                <div class="absolute top-0 right-0 p-6 opacity-20 text-4xl">🚀</div>
+                <h4 class="text-amber-900 font-bold text-[10px] uppercase tracking-[0.2em] mb-3">Next Milestone</h4>
+                <p id="nextGoal" class="text-amber-900 font-black text-2xl leading-tight">Level Up</p>
+                <p class="text-amber-700/60 text-[10px] mt-4 font-bold uppercase tracking-wider italic">* Recommended based on current progress</p>
+            </div>
+        </div>
+        
+        <div class="mt-16 pt-10 border-t border-slate-100 flex justify-between items-end">
+          <div class="text-left">
+            <p class="text-slate-400 text-[10px] font-bold tracking-widest uppercase mb-1">Official Document</p>
+            <p class="text-slate-900 font-mono text-[9px] opacity-40 tracking-tighter">CERT-51T-VERIFIED-2026</p>
           </div>
           <div class="text-right">
-            <div class="text-slate-400 text-[10px] font-black uppercase mb-1 tracking-tighter">Issue Date</div>
-            <div id="dispDate" class="text-lg font-bold text-slate-800 italic">--/--/----</div>
+            <div class="mb-1"><span id="consultantNameDisplay" class="human-signature">Consultant Name</span></div>
+            <div class="h-0.5 w-48 ml-auto bg-slate-900/10 mb-2"></div>
+            <p class="text-slate-900 font-black text-xs uppercase tracking-tighter text-center">Educational Consultant Team</p>
           </div>
-        </div>
-
-        <div id="skillsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
-          </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-6">
-          <div class="lg:col-span-2 bg-slate-50 p-6 rounded-3xl border border-slate-100">
-            <h3 class="text-slate-400 text-[10px] font-black uppercase mb-3 tracking-widest">Academic Feedback</h3>
-            <p id="studentNote" class="text-lg text-slate-700 leading-relaxed font-medium italic italic">الرجاء اختيار طالب لعرض البيانات...</p>
-          </div>
-          <div class="bg-indigo-600 rounded-3xl p-6 text-white flex flex-col justify-center shadow-xl">
-            <h3 class="text-indigo-200 text-[10px] font-black uppercase mb-1 tracking-widest text-center">Next Milestone</h3>
-            <div id="nextGoal" class="text-3xl font-black text-center">Level --</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="p-8 bg-slate-50/50 border-t border-slate-100 flex justify-between items-center rounded-b-3xl">
-        <div class="flex items-center gap-4">
-            <div class="w-12 h-12 bg-slate-900 rounded-2xl flex items-center justify-center text-white font-bold text-xl uppercase">HN</div>
-            <div>
-                <div class="text-slate-400 text-[9px] font-black uppercase tracking-tighter">Expert Consultant</div>
-                <div id="consultantNameDisplay" class="text-md font-bold text-slate-800 italic">Hussam Naser</div>
-            </div>
-        </div>
-        <div class="flex gap-8">
-            <div class="text-right border-r pr-8 border-slate-200">
-                <div class="text-slate-400 text-[9px] font-black uppercase mb-1">Current Score</div>
-                <div class="text-2xl font-black text-slate-900"><span id="avgNow">0</span>%</div>
-            </div>
-            <div class="text-right">
-                <div class="text-slate-400 text-[9px] font-black uppercase mb-1 text-emerald-500">Growth</div>
-                <div class="text-2xl font-black text-emerald-600">+<span id="avgDiff">0</span>%</div>
-            </div>
         </div>
       </div>
     </div>
@@ -101,81 +158,125 @@
     const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0TrGJYR9ywCx79tzUu8JGiOASatbpL6EBUNsgZYjGBc0wtI_vbhGsayUhqU0YJOdmwkWZHgAIWNZY/pub?output=csv";
     let students = [];
 
+    function downloadImage() {
+      const target = document.getElementById('captureTarget');
+      const studentName = document.getElementById('cardName').innerText;
+      window.scrollTo(0,0);
+      html2canvas(target, { scale: 2, useCORS: true, backgroundColor: "#ffffff" }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = `51Talk_Report_${studentName}.png`;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      });
+    }
+
     async function fetchData() {
       try {
         const response = await fetch(sheetURL + '&cache=' + new Date().getTime());
         const text = await response.text();
+        
+        // تعديل منطق تقسيم السطر (CSV Parsing) ليدعم النصوص الطويلة والمسافات
         const rows = text.split(/\r?\n/).filter(r => r.trim() !== "");
         students = rows.slice(1).map(row => {
-          const c = row.split(',').map(v => v.replace(/^"|"$/g, '').trim());
+          // استخدام وظيفة تقسيم ذكية تتعامل مع الفواصل والمسافات
+          const c = parseCSVRow(row);
           return {
-            name: c[0],
+            name: c[0] || "Unknown",
             skills: [
-              { label: "Reading", now: c[1], old: c[2], color: "#6366f1", icon: "📖" },
-              { label: "Vocab", now: c[3], old: c[4], color: "#ec4899", icon: "📝" },
-              { label: "Listening", now: c[5], old: c[6], color: "#3b82f6", icon: "🎧" },
-              { label: "Speaking", now: c[7], old: c[8], color: "#f59e0b", icon: "🗣️" },
-              { label: "Grammar", now: c[9], old: c[10], color: "#10b981", icon: "📏" }
+              { label: "Reading", now: c[1] || 0, old: c[2] || 0, color: "#6366f1", icon: "📖" },
+              { label: "Vocab", now: c[3] || 0, old: c[4] || 0, color: "#ec4899", icon: "📝" },
+              { label: "Listening", now: c[5] || 0, old: c[6] || 0, color: "#3b82f6", icon: "🎧" },
+              { label: "Speaking", now: c[7] || 0, old: c[8] || 0, color: "#f59e0b", icon: "🗣️" },
+              { label: "Grammar", now: c[9] || 0, old: c[10] || 0, color: "#10b981", icon: "📏" }
             ],
-            date: c[11], note: c[12], goal: c[13], consultant: c[14]
+            date: c[11] || "-",
+            note: c[12] || "Great progress! Keep up the effort.", 
+            goal: c[13] || "",
+            consultant: c[14] || "Educational Consultant"
           };
-        });
+        }).filter(s => s.name);
+
         const sel = document.getElementById('studentSelect');
-        sel.innerHTML = '<option value="">-- Select Student / اختر الطالب --</option>';
+        sel.innerHTML = '<option value="">-- Select Student --</option>';
         students.forEach((s, i) => {
-          let opt = document.createElement('option'); opt.value = i; opt.innerText = s.name; sel.appendChild(opt);
+          let opt = document.createElement('option');
+          opt.value = i; opt.innerText = s.name;
+          sel.appendChild(opt);
         });
-      } catch (e) { alert("حدث خطأ في تحميل البيانات"); }
+      } catch (e) { console.error(e); }
+    }
+
+    // وظيفة مساعدة لتقسيم السطر بشكل صحيح
+    function parseCSVRow(text) {
+        let results = [];
+        let current = '';
+        let inQuotes = false;
+        for (let i = 0; i < text.length; i++) {
+            let char = text[i];
+            if (char === '"') inQuotes = !inQuotes;
+            else if (char === ',' && !inQuotes) {
+                results.push(current.trim());
+                current = '';
+            } else current += char;
+        }
+        results.push(current.trim());
+        return results;
     }
 
     function renderStudent() {
       const idx = document.getElementById('studentSelect').value;
       if (idx === "") return;
       const s = students[idx];
-      document.getElementById('reportArea').classList.replace('opacity-0', 'opacity-100');
+      document.getElementById('reportArea').classList.remove('opacity-0');
       document.getElementById('cardName').innerText = s.name;
-      document.getElementById('dispDate').innerText = s.date || "2026";
-      document.getElementById('studentNote').innerText = (s.note || "Focus on your goals!").replace(/Foucs/g, 'Focus');
-      document.getElementById('nextGoal').innerText = s.goal ? "Level " + s.goal : "Next Step";
-      document.getElementById('consultantNameDisplay').innerText = s.consultant || "Hussam Naser";
+      document.getElementById('dispDate').innerText = s.date;
+      document.getElementById('studentNote').innerText = s.note;
+      
+      // حل مشكلة المايلستون - إضافة كلمة Level تلقائياً إذا كان المدخل رقم فقط
+      let goalText = s.goal;
+      if (!isNaN(goalText) && goalText !== "") {
+          goalText = "Level " + goalText;
+      }
+      document.getElementById('nextGoal').innerText = goalText || "Next Level";
+      
+      // تحديث اسم المستشار (يقبل الآن الاسم الثلاثي)
+      document.getElementById('consultantNameDisplay').innerText = s.consultant;
 
-      let sumNow = 0, sumDiff = 0;
+      let sumNow = 0, sumDiff = 0, count = 0;
       const grid = document.getElementById('skillsGrid');
       grid.innerHTML = "";
-      
+
       s.skills.forEach(skill => {
-        const n = parseInt(skill.now) || 0;
-        const d = n - (parseInt(skill.old) || 0);
-        sumNow += n; sumDiff += d;
+        const nowVal = parseInt(skill.now) || 0;
+        const oldVal = parseInt(skill.old) || 0;
+        const diff = nowVal - oldVal;
+        sumNow += nowVal; sumDiff += diff; count++;
         grid.innerHTML += `
           <div class="skill-card">
             <div class="flex justify-between items-center mb-3">
-                <span class="text-[9px] font-black text-slate-400 uppercase tracking-tighter">${skill.icon} ${skill.label}</span>
-                <span class="text-[9px] font-bold px-2 py-0.5 rounded-full ${d >= 0 ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}">${d >= 0 ? '▲' : '▼'} ${Math.abs(d)}%</span>
+              <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">${skill.label}</span>
+              <span class="text-[9px] font-bold px-2 py-0.5 rounded-md ${diff >= 0 ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}">${diff >= 0 ? '▲' : '▼'} ${Math.abs(diff)}%</span>
             </div>
-            <div class="text-2xl font-black mb-2">${n}%</div>
-            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: ${n}%; background: ${skill.color}"></div></div>
-          </div>`;
+            <div class="flex items-baseline gap-0.5 mb-2">
+              <span class="text-3xl font-bold text-slate-900">${nowVal}</span>
+              <span class="text-xl font-bold text-slate-900 opacity-60">%</span>
+            </div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 0%; background: ${skill.color}" id="bar-${skill.label}"></div></div>
+          </div>
+        `;
+        setTimeout(() => { 
+            const bar = document.getElementById('bar-'+skill.label);
+            if(bar) bar.style.width = nowVal + "%"; 
+        }, 150);
       });
-      document.getElementById('avgNow').innerText = Math.round(sumNow / 5);
-      document.getElementById('avgDiff').innerText = Math.abs(Math.round(sumDiff / 5));
+      const avgNow = Math.round(sumNow / count);
+      const avgDiff = Math.round(sumDiff / count);
+      
+      document.getElementById('avgNow').innerText = avgNow;
+      document.getElementById('avgDiff').innerText = Math.abs(avgDiff);
+      document.getElementById('avgTrendIcon').innerText = avgDiff >= 0 ? "📈" : "📉";
+      document.getElementById('avgTrendIcon').className = avgDiff >= 0 ? "text-emerald-500 text-2xl ml-1" : "text-rose-500 text-2xl ml-1";
     }
-
-    function downloadImage() {
-      const target = document.getElementById('captureTarget');
-      html2canvas(target, { 
-        scale: 3, 
-        useCORS: true, 
-        allowTaint: true,
-        backgroundColor: "#ffffff"
-      }).then(canvas => {
-        const link = document.createElement('a');
-        link.download = `51Talk_Report_${document.getElementById('cardName').innerText}.png`;
-        link.href = canvas.toDataURL("image/png");
-        link.click();
-      });
-    }
-
     window.onload = fetchData;
   </script>
 </body>
